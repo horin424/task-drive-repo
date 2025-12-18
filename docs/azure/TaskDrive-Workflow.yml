@@ -1,0 +1,170 @@
+app:
+  description: "Master Workflow for TaskDrive: Handles Minutes, Bullets, and Tasks generation based on input type."
+  icon: 🤖
+  icon_background: "#FFEAD5"
+  mode: workflow
+  name: TaskDrive-Master-Workflow
+kind: app
+version: 0.1.2
+workflow:
+  graph:
+    nodes:
+      - id: "start"
+        position:
+          x: 80
+          y: 200
+        sourceType: start
+        targetType: null
+        title: Start
+        type: start
+        variables:
+          - label: Transcript
+            max_length: null
+            name: transcript
+            options: []
+            required: true
+            type: paragraph
+          - label: Processing Type
+            max_length: null
+            name: processingType
+            options:
+              - minutes
+              - bullets
+              - tasks
+            required: true
+            type: select
+
+      - id: "router"
+        position:
+          x: 380
+          y: 200
+        sourceType: if-else
+        targetType: null
+        title: Router (If/Else)
+        type: if-else
+        conditions:
+          - id: "cond_minutes"
+            operator: equals
+            variable_selector:
+              - start
+              - processingType
+            value: "minutes"
+          - id: "cond_bullets"
+            operator: equals
+            variable_selector:
+              - start
+              - processingType
+            value: "bullets"
+        default_condition_id: "default_tasks"
+
+      - id: "llm_minutes"
+        position:
+          x: 680
+          y: 50
+        sourceType: llm
+        targetType: null
+        title: Generate Minutes
+        type: llm
+        model:
+          mode: chat
+          name: gpt-4o-mini
+          provider: azure_openai
+          completion_params:
+            temperature: 0.5
+        prompt_template:
+          - role: system
+            text: |
+              AIチャットボットによる壁打ち案の詳細
+              議題3: 議事録ツールの提案とデモ
+              ツールの機能一覧（話者分離、タスク管理など）
+              参加者の反応や実施の可否
+              決定事項・アクションアイテム
+              次回会議・連絡事項: （情報がなければ省略）
+
+              上記のルールに則り、提示された文字起こしデータをもとに、具体的な事例やエピソードを可能な範囲で含めた詳細な議事録を作成してください。日付や場所などの情報が不明の場合は、それらの項目を入れずに出力してください。
+          - role: user
+            text: "{{#start.transcript#}}"
+
+      - id: "llm_bullets"
+        position:
+          x: 680
+          y: 250
+        sourceType: llm
+        targetType: null
+        title: Generate Bullets
+        type: llm
+        model:
+          mode: chat
+          name: gpt-4o-mini
+          provider: azure_openai
+          completion_params:
+            temperature: 0.3
+        prompt_template:
+          - role: system
+            text: |
+              会議で交わされた内容を要約し、箇条書きで分かりやすくまとめてください。
+              必要な要素を極力落とさずに圧縮し、全体の流れが把握しやすい資料を作成することを目指してください。
+              出力イメージ（例）:
+              - 原が沈黙の後に謝罪した。
+              - 平川が感謝を述べた。
+          - role: user
+            text: "{{#start.transcript#}}"
+
+      - id: "llm_tasks"
+        position:
+          x: 680
+          y: 450
+        sourceType: llm
+        targetType: null
+        title: Generate Tasks
+        type: llm
+        model:
+          mode: chat
+          name: gpt-4o-mini
+          provider: azure_openai
+          completion_params:
+            temperature: 0.3
+        prompt_template:
+          - role: system
+            text: |
+              会議の文字起こしから、アクションアイテム（タスク）を抽出してリスト化してください。
+              各タスクについて、以下の情報を明確にしてください：
+              1. タスクの内容
+              2. 担当者（もし特定できれば）
+              3. 期限（もし言及されていれば）
+              出力形式:Markdownリスト
+          - role: user
+            text: "{{#start.transcript#}}"
+
+      - id: "end"
+        position:
+          x: 980
+          y: 200
+        sourceType: end
+        targetType: null
+        title: End
+        type: end
+        outputs:
+          - name: text
+            value_selector:
+              - sys
+              - last_node_output
+
+    edges:
+      - source: start
+        target: router
+      - source: router
+        target: llm_minutes
+        sourceHandle: "cond_minutes"
+      - source: router
+        target: llm_bullets
+        sourceHandle: "cond_bullets"
+      - source: router
+        target: llm_tasks
+        sourceHandle: "default_tasks"
+      - source: llm_minutes
+        target: end
+      - source: llm_bullets
+        target: end
+      - source: llm_tasks
+        target: end

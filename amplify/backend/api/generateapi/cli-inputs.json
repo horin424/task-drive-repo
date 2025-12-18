@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "paths": {
+    "/generate/process-all": {
+      "name": "/generate/process-all",
+      "lambdaFunction": "generationProcessor",
+      "permissions": {
+        "groups": {
+          "Admin": [
+            "create"
+          ],
+          "Users": [
+            "create"
+          ]
+        },
+        "setting": "private"
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "Effect": "Allow",
+    "Action": [
+      "secretsmanager:GetSecretValue"
+    ],
+    "Resource": [
+      "arn:aws:secretsmanager:us-east-1:006985033268:secret:transcription-api-keys-${env}-*"
+    ]
+  },
+  {
+    "Action": [
+      "s3:ListBucket", 
+      "s3:GetObject", 
+      "s3:PutObject"
+    ],
+    "Resource": [
+      "arn:aws:s3:::transcriptminute-output-*-${env}",
+      "arn:aws:s3:::transcriptminute-output-*-${env}/*"
+    ]
+  }
+]

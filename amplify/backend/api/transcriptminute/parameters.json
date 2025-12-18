@@ -1,0 +1,12 @@
+{
+  "AppSyncApiName": "transcriptminute",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authtranscriptminute472b0aaa",
+      "Outputs.UserPoolId"
+    ]
+  },
+  "AuthModeLastUpdated": "2025-05-01T11:08:24.648Z"
+}

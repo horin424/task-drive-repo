@@ -1,0 +1,1062 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  padding: 1rem;
+  margin: 0;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.section {
+  width: 100%;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #1f2937;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+
+.transcript {
+  font-size: 1rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  padding: 0;
+  background-color: transparent;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.transcriptLine {
+  margin-bottom: 0.75rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease-in-out;
+}
+
+.transcriptLine:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 新しい話者の場合は余白を追加 */
+.transcriptLine[data-same-speaker="false"] {
+  margin-top: 1.5rem;
+}
+
+/* 同じ話者が続く場合 */
+.transcriptLine[data-same-speaker="true"] {
+  margin-top: 0.75rem;
+}
+
+/* 同じ話者が続く場合、話者タグを小さく表示 */
+.transcriptLine[data-same-speaker="true"] .speakerTag {
+  opacity: 0.8;
+  font-size: 0.85rem;
+  padding: 0.375rem 1rem;
+}
+
+.transcriptContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.transcriptCards {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: #0f172a;
+  padding: 1.25rem;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  border: 1px solid #1f2937;
+}
+
+.transcriptCard {
+  border: 1px solid #1f2937;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #111827;
+  color: #e5e7eb;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.transcriptCardHeader {
+  padding: 0.6rem 1rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+.transcriptCardBody {
+  padding: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #e5e7eb;
+}
+
+/* アニメーション効果は上記の .transcriptLine に統合済み */
+
+/* 話者タグのホバー効果 */
+.speakerTag:hover {
+  opacity: 0.9;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .transcriptLine {
+    margin-bottom: 0.5rem;
+  }
+  
+  .transcriptLine[data-same-speaker="false"] {
+    margin-top: 1rem;
+  }
+  
+  .transcriptLine[data-same-speaker="true"] {
+    margin-top: 0.5rem;
+  }
+  
+  .speakerTag {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.85rem;
+  }
+  
+  .speakerContent {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+}
+
+.speakerTag {
+  display: block;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #3b82f6; /* デフォルト色（動的に上書きされる） */
+  padding: 0.5rem 1rem;
+  width: 100%;
+  font-size: 0.9rem;
+  letter-spacing: 0.025em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.speakerContent {
+  padding: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  background-color: #ffffff;
+  color: #1f2937;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  /* 長いテキストでも見やすくする */
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.bulletPoints {
+  padding-left: 1.5rem;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.bulletPoints li {
+  margin-bottom: 0.75rem;
+  color: #1f2937;
+}
+
+.minutes {
+  white-space: pre-wrap;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #1f2937;
+}
+
+.minutes p {
+  margin-bottom: 0.75rem;
+}
+
+/* 結果読み込み中の表示 */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  min-height: 200px;
+}
+
+.loadingContainer p {
+  margin-top: 1rem;
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #374151;
+  text-align: center;
+}
+
+.loading, .error {
+  padding: 2rem;
+  text-align: center;
+  width: 100%;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.loading {
+  color: #6b7280;
+}
+
+.error {
+  color: #ef4444;
+}
+
+.controls {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.editButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.editButton:hover {
+  background-color: #2563eb;
+  transform: translateY(-2px);
+}
+
+.editButton:active {
+  transform: translateY(0);
+}
+
+.generateButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.25rem;
+  background-color: #10b981; /* 緑色 */
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-left: 0.5rem;
+}
+
+.generateButton:hover {
+  background-color: #059669;
+  transform: translateY(-2px);
+}
+
+.generateButton:active {
+  transform: translateY(0);
+}
+
+.generateButton:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.downloadButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  background-color: #6b7280;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.downloadButton:hover {
+  background-color: #4b5563;
+}
+
+.retryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  background-color: #f59e0b;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 0.5rem;
+}
+
+.retryButton:hover {
+  background-color: #d97706;
+}
+
+.generatingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  margin-bottom: 1rem;
+  background-color: #f3f4f6;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+.smallText {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+  .container {
+    background-color: #1f2937;
+    color: #e5e7eb;
+  }
+
+  .section {
+    background-color: #111827;
+  }
+
+  .transcript {
+    background-color: #111827;
+    color: #e5e7eb;
+  }
+
+  .resultHeader {
+    background: none;
+    border-bottom-color: #374151;
+  }
+
+  .resultTitle {
+    color: #ffffff !important;
+    font-weight: 700;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8), 0 0 8px rgba(255, 255, 255, 0.3);
+    opacity: 1;
+  }
+  
+  .sectionTitle {
+    color: #e5e7eb;
+    border-bottom-color: #374151;
+  }
+  
+  .transcriptContainer {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+  
+  .speakerTag {
+    background-color: #2563eb;
+  }
+  
+  .speakerContent {
+    background-color: #1f2937;
+    color: #e5e7eb;
+    border-top: 1px solid #374151;
+  }
+  
+  .bulletPoints li {
+    color: #d1d5db;
+  }
+  
+  .minutes {
+    color: #d1d5db;
+  }
+  
+  .loading, .error {
+    background-color: #111827;
+  }
+  
+  .loadingContainer {
+    background-color: #111827;
+  }
+  
+  .loadingContainer p {
+    color: #e5e7eb;
+  }
+  
+  .errorContainer {
+    background-color: #111827;
+  }
+  
+  .errorContainer h3 {
+    color: #f87171;
+  }
+  
+  .errorContainer p {
+    color: #e5e7eb;
+  }
+  
+  .errorMessage {
+    color: #9ca3af;
+    background-color: #1f2937;
+  }
+  
+  .resetButton {
+    background-color: #2563eb;
+  }
+  
+  .resetButton:hover {
+    background-color: #3b82f6;
+  }
+  
+  .loading {
+    color: #9ca3af;
+  }
+  
+  .error {
+    color: #f87171;
+  }
+  
+  .generateButton {
+    background-color: #059669;
+  }
+  
+  .generateButton:hover {
+    background-color: #10b981;
+  }
+  
+  .generateButton:disabled {
+    background-color: #4b5563;
+  }
+  
+  .downloadButton {
+    background-color: #4b5563;
+  }
+  
+  .downloadButton:hover {
+    background-color: #6b7280;
+  }
+  
+  .retryButton {
+    background-color: #d97706;
+  }
+  
+  .retryButton:hover {
+    background-color: #f59e0b;
+  }
+  
+  .generatingContainer {
+    background-color: #1f2937;
+  }
+  
+  .spinner {
+    border-color: rgba(255, 255, 255, 0.1);
+    border-left-color: #3b82f6;
+  }
+  
+  .smallText {
+    color: #9ca3af;
+  }
+
+  .editButton {
+    background-color: #2563eb;
+  }
+
+  .editButton:hover {
+    background-color: #3b82f6;
+  }
+
+  .downloadAllButton {
+    background-color: #2563eb;
+  }
+
+  .downloadAllButton:hover {
+    background-color: #3b82f6;
+  }
+
+  .viewButton {
+    background-color: #374151;
+    color: #d1d5db;
+    border-color: #4b5563;
+  }
+
+  .viewButton:hover {
+    background-color: #4b5563;
+  }
+
+  .generateButtonNotRecommended {
+    background-color: #374151;
+    color: #9ca3af;
+    border-color: #4b5563;
+  }
+  
+  .generateButtonNotRecommended:hover {
+    background-color: #4b5563;
+  }
+  
+  .generateButtonNotRecommended:disabled {
+    background-color: #1f2937;
+  }
+
+  .resetButton {
+    background-color: #ea580c;
+  }
+  
+  .resetButton:hover {
+    background-color: #f97316;
+  }
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+  .container {
+    padding: 0.5rem;
+    max-width: 100%;
+  }
+  
+  .section {
+    padding: 1rem;
+  }
+  
+  .controls {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .editButton {
+    width: 90%;
+    justify-content: center;
+  }
+}
+
+.resultHeader {
+  display: flex;
+  flex-direction: column; /* 縦並びに変更 */
+  align-items: center; /* 中央揃え */
+  gap: 1.5rem; /* 各要素間のギャップ */
+  margin-bottom: 2rem;
+}
+
+.resultTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.actionArea {
+  width: 100%;
+  display: flex;
+  flex-direction: column; /* 縦並びに変更 */
+  align-items: center; /* 中央揃え */
+  gap: 1.5rem; /* 各アクション間のギャップ */
+  margin-bottom: 2.5rem; /* 下のコンテンツとのマージンを確保 */
+}
+
+.mainActions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.secondaryActions {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* 主要ボタン（話者名編集、生成など） */
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  color: white;
+  background-color: #3b82f6;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  min-width: 180px;
+}
+
+.primaryButton:hover {
+  background-color: #2563eb;
+}
+
+.primaryButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* リセットボタン（新しくやり直す） */
+.resetButton {
+  padding: 0.5rem 1rem;
+  color: #4b5563;
+  background-color: transparent;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.875rem;
+}
+
+.resetButton:hover {
+  background-color: #f3f4f6;
+}
+
+.mainControls {
+  display: flex;
+  align-self: flex-end;
+}
+
+.downloadAllButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  color: white;
+  background-color: #10b981;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 0.5rem;
+  min-width: 250px;
+}
+
+.downloadAllButton:hover {
+  background-color: #059669;
+}
+
+.resultsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  white-space: nowrap;
+  min-width: 150px;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  min-width: 180px;
+  justify-content: flex-end;
+}
+
+.viewButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-right: 0.5rem;
+  width: 60px;
+}
+
+.viewButton:hover {
+  background-color: #e5e7eb;
+}
+
+.downloadButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  background-color: #6b7280;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 110px;
+}
+
+.downloadButton:hover {
+  background-color: #4b5563;
+}
+
+/* 話者名編集前の生成ボタン（非推奨） */
+.generateButtonNotRecommended {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  color: #374151;
+  background-color: #f3f4f6;
+  border: 1px dashed #9ca3af;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  min-width: 180px;
+}
+
+.generateButtonNotRecommended:hover {
+  background-color: #e5e7eb;
+}
+
+.resetButton {
+  padding: 0.5rem 1rem;
+  color: #4b5563;
+  background-color: transparent;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.875rem;
+}
+
+.resetButton:hover {
+  background-color: #f3f4f6;
+}
+
+.generatingContainer .smallText {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+/* --- Task File Upload Area Styles --- */
+.taskUploadArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.taskUploadTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  margin: 0 0 0.5rem 0;
+  color: #374151;
+}
+
+.taskFileInputContainer {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.taskFileInputGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 200px;
+}
+
+.taskFileLabel {
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.taskFileButton {
+  background-color: #fff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.taskFileButton:hover {
+  background-color: #f3f4f6;
+}
+
+.fileName {
+  font-size: 0.9rem;
+  color: #6b7280;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.taskUploadHelpText {
+  font-size: 0.9rem;
+  color: #6b7280;
+  text-align: center;
+  margin: 0;
+}
+
+.generationControlsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border-radius: 8px;
+  background-color: #f9fafb;
+  width: 100%;
+  max-width: 700px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.error {
+  margin-top: 1rem;
+  color: #ef4444;
+} 
+
+/* 生成中のプログレス表示 */
+.generationProgressContainer {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.generationProgress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: #f3f4f6;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-width: 300px;
+}
+
+.generationMessage {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.generationText {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #374151;
+  margin: 0;
+}
+
+.generationSubText {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0;
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+  .generationProgress {
+    background-color: #374151;
+  }
+  
+  .generationText {
+    color: #f3f4f6;
+  }
+  
+  .generationSubText {
+    color: #9ca3af;
+  }
+  
+  .taskFileLabel {
+    color: #d1d5db;
+  }
+  
+  .taskFileButton {
+    background-color: #374151;
+    color: #f3f4f6;
+    border: 1px solid #4b5563;
+  }
+  
+  .taskFileButton:hover {
+    background-color: #4b5563;
+  }
+  
+  .fileName {
+    color: #9ca3af;
+  }
+  
+  .taskUploadHelpText {
+    color: #9ca3af;
+  }
+  
+  .generationControlsContainer {
+    background-color: #374151;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  }
+} 
+
+/* エラー表示 */
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  min-height: 200px;
+}
+
+.errorContainer h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #ef4444;
+  text-align: center;
+}
+
+.errorContainer p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  color: #374151;
+  text-align: center;
+}
+
+.errorMessage {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-family: monospace;
+  background-color: #f3f4f6;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-top: 1rem;
+  max-width: 100%;
+  word-break: break-word;
+}
+
+.resetButton {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.resetButton:hover {
+  background-color: #2563eb;
+} 
+
+/* ダウンロード済みステータス */
+.downloadedStatus {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  background-color: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 0.375rem;
+  min-width: 250px;
+  margin-top: 0.5rem;
+}
+
+.downloadedStatus p {
+  margin: 0;
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 0.875rem;
+}
+
+.downloadedStatus::before {
+  content: "✓";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: #10b981;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-right: 0.75rem;
+} 

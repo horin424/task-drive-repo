@@ -1,0 +1,41 @@
+{
+  "name": "transcript-minute-azure",
+  "version": "0.2.2",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "azure:setup": "powershell -ExecutionPolicy Bypass -File scripts/azure-setup.ps1",
+    "azure:b2c": "powershell -ExecutionPolicy Bypass -File scripts/azure-b2c-setup.ps1",
+    "azure:deploy": "az staticwebapp deploy --name transcript-minute-web --resource-group transcript-minute-rg --source ."
+  },
+  "dependencies": {
+    "@azure/msal-browser": "^3.7.1",
+    "@azure/msal-react": "^2.0.11",
+    "@azure/storage-blob": "^12.17.0",
+    "@tanstack/react-query": "^5.82.0",
+    "@types/file-saver": "^2.0.7",
+    "file-saver": "^2.0.5",
+    "jszip": "^3.10.1",
+    "next": "15.2.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hot-toast": "^2.5.2",
+    "react-markdown": "^10.1.0",
+    "zustand": "^5.0.6",
+    "axios": "^1.6.2"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.2.2",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5"
+  }
+}

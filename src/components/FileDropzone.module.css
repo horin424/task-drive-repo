@@ -1,0 +1,114 @@
+.dropzone {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+    background-color: #f9f9f9;
+}
+  
+.dropzone.dragging {
+    border-color: #3b82f6;
+    background-color: #eff6ff;
+}
+  
+.fileInput {
+    display: none;
+}
+  
+.uploadControls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+  
+.selectButton {
+    padding: 0.75rem 1.5rem;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+  
+.selectButton:hover {
+    background-color: #2563eb;
+}
+  
+.helpText {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.languageSelector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.languageLabel {
+    font-size: 0.875rem;
+    color: #4b5563;
+}
+
+.languageDropdown {
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    border: 1px solid #d1d5db;
+    background-color: white;
+}
+
+.remainingTime {
+    margin-top: 0.5rem;
+}
+
+.minutes {
+    font-weight: bold;
+    color: #1d4ed8;
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+    .dropzone {
+        border-color: #4b5563;
+        background-color: #1f2937;
+        color: #e5e7eb;
+    }
+    
+    .dropzone.dragging {
+        border-color: #3b82f6;
+        background-color: #1e3a8a;
+    }
+    
+    .selectButton {
+        background-color: #2563eb;
+    }
+    
+    .selectButton:hover {
+        background-color: #3b82f6;
+    }
+    
+    .helpText {
+        color: #9ca3af;
+    }
+    
+    .languageLabel {
+        color: #d1d5db;
+    }
+    
+    .languageDropdown {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #e5e7eb;
+    }
+    
+    .minutes {
+        color: #60a5fa;
+    }
+} 

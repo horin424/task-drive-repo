@@ -1,0 +1,150 @@
+.progressContainer {
+  width: 100%;
+  margin-bottom: 2rem;
+  padding: 0.5rem 0;
+}
+
+.progressSteps {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  margin: 0 auto;
+  width: 90%;
+}
+
+/* 進捗バー */
+.progressBar {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 4px;
+  background-color: #e5e7eb;
+  width: 100%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.progressBarFilled {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: #3b82f6;
+  transition: width 0.3s ease;
+}
+
+/* 各ステップ */
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.stepCircle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #e5e7eb;
+  border: 3px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+  position: relative;
+  color: #6b7280;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+}
+
+.stepName {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-align: center;
+  max-width: 80px;
+  transition: all 0.3s ease;
+}
+
+/* 完了したステップ */
+.completed .stepCircle {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+}
+
+.completed .stepName {
+  color: #3b82f6;
+  font-weight: 600;
+}
+
+/* 現在のステップ */
+.current .stepCircle {
+  background-color: white;
+  border-color: #3b82f6;
+  color: #3b82f6;
+  transform: scale(1.1);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.current .stepName {
+  color: #3b82f6;
+  font-weight: 600;
+  transform: scale(1.05);
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+  .progressBar {
+    background-color: #374151;
+  }
+  
+  .stepCircle {
+    background-color: #374151;
+    border-color: #4b5563;
+    color: #d1d5db;
+  }
+  
+  .stepName {
+    color: #9ca3af;
+  }
+  
+  .completed .stepCircle {
+    background-color: #2563eb;
+    border-color: #2563eb;
+  }
+  
+  .completed .stepName {
+    color: #60a5fa;
+  }
+  
+  .current .stepCircle {
+    background-color: #111827;
+    border-color: #60a5fa;
+    color: #60a5fa;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+  }
+  
+  .current .stepName {
+    color: #60a5fa;
+  }
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+  .progressSteps {
+    width: 95%;
+  }
+  
+  .stepCircle {
+    width: 24px;
+    height: 24px;
+    font-size: 0.75rem;
+  }
+  
+  .stepName {
+    font-size: 0.65rem;
+    max-width: 60px;
+  }
+} 

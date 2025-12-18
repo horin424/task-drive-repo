@@ -1,0 +1,110 @@
+.container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 1rem;
+    background-color: var(--background-accent, #f9fafb);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.errorContainer {
+    margin-top: 1rem;
+    padding: 1.5rem;
+    background-color: #fee2e2;
+    border: 1px solid #fca5a5;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.error {
+    color: #b91c1c;
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.helpText {
+    color: #7f1d1d;
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+.actionButtons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* 処理中UI用のスタイル */
+.processingContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background-color: var(--background-accent, #f9fafb);
+    border-radius: 8px;
+}
+
+.processingMessage {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.processingText {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.processingSubText {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+    .container {
+        background-color: #1f2937;
+        color: #e5e7eb;
+    }
+    
+    .title {
+        color: #f9fafb;
+    }
+    
+    .errorContainer {
+        background-color: #7f1d1d;
+        border-color: #991b1b;
+    }
+    
+    .error {
+        color: #fca5a5;
+    }
+    
+    .helpText {
+        color: #f87171;
+    }
+    
+    .processingContainer {
+        background-color: #1f2937;
+    }
+    
+    .processingText {
+        color: #e5e7eb;
+    }
+    
+    .processingSubText {
+        color: #9ca3af;
+    }
+} 

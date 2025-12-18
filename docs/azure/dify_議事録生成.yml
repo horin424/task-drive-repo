@@ -1,0 +1,240 @@
+app:
+  description: 開発環境の議事録生成
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: advanced-chat
+  name: '[dev]議事録生成'
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openai:0.0.29@9e17ae8073fe53c282e9dc411e76a3cc52f8e794e4cc2499d204502086871c53
+kind: app
+version: 0.1.5
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 1000
+        batch_count_limit: 1000
+        file_size_limit: 1000
+        image_file_size_limit: 1000
+        video_file_size_limit: 1000
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        sourceType: start
+        targetType: llm
+      id: 1732594945534-llm
+      source: '1732594945534'
+      sourceHandle: source
+      target: llm
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        sourceType: llm
+        targetType: answer
+      id: llm-source-answer-target
+      source: llm
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: 開始
+        type: start
+        variables: []
+      height: 54
+      id: '1732594945534'
+      position:
+        x: 80
+        y: 282
+      positionAbsolute:
+        x: 80
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - sys
+          - query
+        desc: ''
+        model:
+          completion_params: {}
+          mode: chat
+          name: o3
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: 13ff7e4f-88a3-4583-abd6-d3b7e863ca1d
+          role: system
+          text: 'あなたは、user が提示する会議の文字起こしデータから詳細かつわかりやすい議事録を作成する専門家です。以下の方針に従って議事録を生成してください。
+
+            議事録の目的・スタイル
+
+            会議の流れを正確に把握できるよう、話し合った内容や背景となる情報を具体的に盛り込みます。
+
+            読み返したときに「なぜその議題が取り上げられたのか」「具体的にどんな提案や問題があったのか」を再現できるレベルの詳細さを目指してください。
+
+            必要に応じて「誰が何を発言したのか」を明確に示し、決定事項や課題・今後のアクションをはっきりと示します。
+
+            基本的な構成
+
+            会議の基本情報: 日時や場所が判明していれば記載。不明の場合はこの項目自体を記載しないか削除してください。
+
+            参加者（氏名または部署・役職）: 文字起こし中に登場した人物をリストアップし、社名や所属なども可能な範囲で付与してください。
+
+            議題・テーマ: 大きな話題ごとに区分し、見出しを付けます。
+
+            議事内容: 各議題について、具体的に「誰が何を提案したか」「どのような意見が出たか」「何が問題視されたか」をまとめてください。
+
+            決定事項/アクションアイテム: 実行すべきタスクや合意された方針を時系列や重要度順に整理し、担当者が判明していれば併記してください。
+
+            その他補足・注意点: 今後の連絡事項や次回会議への持ち越し項目など。
+
+            情報の取り扱い方
+
+            日時、場所、会議タイトルなどの情報が不明な場合は、その部分を省いて問題ありません。
+
+            具体的なエピソードや事例（例：AI活用による業務効率化、評価制度で使われているシート例など）は、文字起こしから判断できる限り詳しく取り上げてください。
+
+            氏名や社名など、文字起こしに登場する事実情報は正しく引用してください。
+
+            プライバシーに関わる情報（個人名が不要な場合など）は、必要に応じて伏せ字やイニシャルへ変換してください。
+
+            表記・書式
+
+            箇条書きや番号付きリストを積極的に使い、読み手にとって分かりやすい形式にしてください。
+
+            重複やフィラーは省きつつ、会話の背景や意図が伝わる程度に描写してください。
+
+            堅苦しくなりすぎず、一般的なビジネス文書として読める文章を心がけてください。
+
+            例
+
+            会議の基本情報: （情報があれば記載し、不明なら省略）
+
+            参加者: INC 原、CAC 佐藤、等
+
+            議題1: 営業活動とAI活用の現状
+
+            誰がどういった役割を担っているか
+
+            AI活用がなぜ必要か、今後の事業展望
+
+            議題2: 人事評価制度の課題と改善策
+
+            具体的な現状の問題点（評価シートのばらつき、行動目標設定の難しさ）
+
+            AIチャットボットによる壁打ち案の詳細
+
+            議題3: 議事録ツールの提案とデモ
+
+            ツールの機能一覧（話者分離、タスク管理など）
+
+            参加者の反応や実施の可否
+
+            決定事項・アクションアイテム
+
+            AI活用チャットボットのトライアル
+
+            議事録ツールのトライアル
+
+            NDA締結
+
+            次回会議・連絡事項: （情報がなければ省略）
+
+            上記のルールに則り、提示された文字起こしデータをもとに、具体的な事例やエピソードを可能な範囲で含めた詳細な議事録を作成してください。日付や場所などの情報が不明の場合は、それらの項目を入れずに出力してください。会話の重要なニュアンスや発言の背景が伝わるようにまとめてください。'
+        - id: f2caa185-f7bd-46b7-b0e1-e293b5f5650d
+          role: user
+          text: '{{#context#}}'
+        selected: true
+        title: LLM
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: llm
+      position:
+        x: 380.7587573495365
+        y: 282
+      positionAbsolute:
+        x: 380.7587573495365
+        y: 282
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#llm.text#}}'
+        desc: ''
+        selected: false
+        title: 回答
+        type: answer
+        variables: []
+      height: 105
+      id: answer
+      position:
+        x: 699.311236502409
+        y: 282
+      positionAbsolute:
+        x: 699.311236502409
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: 72.85389847405895
+      y: 57.59673537652688
+      zoom: 0.8818002577164868

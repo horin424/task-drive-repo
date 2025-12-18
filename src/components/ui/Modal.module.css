@@ -1,0 +1,89 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalContent {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.title {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.body {
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.footer {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+    .modalContent {
+        background: #1f2937;
+        color: #f9fafb;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+    
+    .header {
+        border-bottom: 1px solid #374151;
+    }
+    
+    .title {
+        color: #f9fafb;
+    }
+    
+    .closeButton {
+        color: #9ca3af;
+    }
+    
+    .closeButton:hover {
+        color: #f9fafb;
+    }
+    
+    .footer {
+        border-top: 1px solid #374151;
+    }
+}

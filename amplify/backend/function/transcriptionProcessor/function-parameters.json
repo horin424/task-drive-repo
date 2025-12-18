@@ -1,0 +1,61 @@
+{
+  "lambdaLayers": [],
+  "permissions": {
+    "api": {
+      "transcriptminute": [
+        "Query",
+        "Mutation"
+      ]
+    },
+    "storage": {
+      "s31d11b5d9": [
+        "create",
+        "read",
+        "update"
+      ],
+      "Organization:@model(appsync)": [
+        "create",
+        "read",
+        "update"
+      ],
+      "ProcessingSession:@model(appsync)": [
+        "read",
+        "update"
+      ]
+    }
+  },
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "transcriptionApiProvider",
+      "environmentVariableName": "TRANSCRIPTION_API_PROVIDER"
+    },
+    {
+      "cloudFormationParameterName": "difyApiUrl",
+      "environmentVariableName": "DIFY_API_URL"
+    },
+    {
+      "cloudFormationParameterName": "apiProvider",
+      "environmentVariableName": "API_PROVIDER"
+    },
+    {
+      "cloudFormationParameterName": "useCloudStorageUrl",
+      "environmentVariableName": "USE_CLOUD_STORAGE_URL"
+    },
+    {
+      "cloudFormationParameterName": "secretsManagerSecretArn",
+      "environmentVariableName": "SECRETS_MANAGER_SECRET_ARN"
+    },
+    {
+      "cloudFormationParameterName": "apiSecretArn",
+      "environmentVariableName": "API_SECRET_ARN"
+    },
+    {
+      "cloudFormationParameterName": "s3OutputBucket",
+      "environmentVariableName": "S3_OUTPUT_BUCKET"
+    },
+    {
+      "cloudFormationParameterName": "logLevel",
+      "environmentVariableName": "LOG_LEVEL"
+    }
+  ]
+}

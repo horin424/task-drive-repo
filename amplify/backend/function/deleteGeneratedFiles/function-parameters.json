@@ -1,0 +1,34 @@
+{
+  "lambdaLayers": [],
+  "permissions": {
+    "api": {
+      "transcriptminute": [
+        "Query",
+        "Mutation"
+      ]
+    },
+    "storage": {
+      "s31d11b5d9": [
+        "delete"
+      ],
+      "ProcessingSession:@model(appsync)": [
+        "read",
+        "update"
+      ]
+    }
+  },
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "storageOutputbucketBucketname",
+      "environmentVariableName": "STORAGE_OUTPUTBUCKET_BUCKETNAME"
+    },
+    {
+      "cloudFormationParameterName": "logLevel",
+      "environmentVariableName": "LOG_LEVEL"
+    },
+    {
+      "cloudFormationParameterName": "storageInputBucketname",
+      "environmentVariableName": "STORAGE_INPUT_BUCKETNAME"
+    }
+  ]
+}

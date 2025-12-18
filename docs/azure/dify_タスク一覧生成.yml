@@ -1,0 +1,791 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: advanced-chat
+  name: '[dev]タスク一覧生成'
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: bowenliang123/md_exporter:1.8.0@aa15ca94651e608fa2defef440cc5bbd22884053168bd2d41d132d5d1b021129
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openai:0.0.29@9e17ae8073fe53c282e9dc411e76a3cc52f8e794e4cc2499d204502086871c53
+kind: app
+version: 0.1.5
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 1000
+        batch_count_limit: 1000
+        file_size_limit: 1000
+        image_file_size_limit: 1000
+        video_file_size_limit: 1000
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: document-extractor
+      id: 1743560901339-source-1743560958023-target
+      selected: false
+      source: '1743560901339'
+      sourceHandle: source
+      target: '1743560958023'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: document-extractor
+      id: 1743560901339-source-1743560963828-target
+      selected: false
+      source: '1743560901339'
+      sourceHandle: source
+      target: '1743560963828'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: document-extractor
+      id: 1743560901339-source-1747670985857-target
+      selected: false
+      source: '1743560901339'
+      sourceHandle: source
+      target: '1747670985857'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1747791374947-source-1747793534610-target
+      selected: false
+      source: '1747791374947'
+      sourceHandle: source
+      target: '1747793534610'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1747793534610-source-1747904475697-target
+      selected: false
+      source: '1747793534610'
+      sourceHandle: source
+      target: '1747904475697'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1747904475697-source-1747793787311-target
+      selected: false
+      source: '1747904475697'
+      sourceHandle: source
+      target: '1747793787311'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: document-extractor
+        targetType: llm
+      id: 1743560963828-source-1749779935664-target
+      selected: false
+      source: '1743560963828'
+      sourceHandle: source
+      target: '1749779935664'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: document-extractor
+        targetType: llm
+      id: 1743560958023-source-1749779935664-target
+      selected: false
+      source: '1743560958023'
+      sourceHandle: source
+      target: '1749779935664'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: document-extractor
+        targetType: llm
+      id: 1747670985857-source-1749779935664-target
+      selected: false
+      source: '1747670985857'
+      sourceHandle: source
+      target: '1749779935664'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1749779935664-source-1747791374947-target
+      selected: false
+      source: '1749779935664'
+      sourceHandle: source
+      target: '1747791374947'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: tool
+      id: 1747793787311-source-1750753377723-target
+      selected: false
+      source: '1747793787311'
+      sourceHandle: source
+      target: '1750753377723'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: tool
+        targetType: answer
+      id: 1750753377723-source-1747459454147-target
+      selected: false
+      source: '1750753377723'
+      sourceHandle: source
+      target: '1747459454147'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: 開始
+        type: start
+        variables:
+        - allowed_file_extensions: []
+          allowed_file_types:
+          - document
+          allowed_file_upload_methods:
+          - local_file
+          label: task
+          max_length: 48
+          options: []
+          required: true
+          type: file
+          variable: task
+        - allowed_file_extensions: []
+          allowed_file_types:
+          - document
+          allowed_file_upload_methods:
+          - local_file
+          label: transcription
+          max_length: 48
+          options: []
+          required: true
+          type: file
+          variable: transcription
+        - allowed_file_extensions: []
+          allowed_file_types:
+          - document
+          allowed_file_upload_methods:
+          - local_file
+          - remote_url
+          label: information
+          max_length: 48
+          options: []
+          required: true
+          type: file
+          variable: information
+      height: 142
+      id: '1743560901339'
+      position:
+        x: 80
+        y: 282
+      positionAbsolute:
+        x: 80
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        is_array_file: false
+        selected: false
+        title: 文字起こし
+        type: document-extractor
+        variable_selector:
+        - '1743560901339'
+        - transcription
+      height: 92
+      id: '1743560958023'
+      position:
+        x: 380
+        y: 407.9693432890956
+      positionAbsolute:
+        x: 380
+        y: 407.9693432890956
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        is_array_file: false
+        selected: false
+        title: タスク一覧
+        type: document-extractor
+        variable_selector:
+        - '1743560901339'
+        - task
+      height: 92
+      id: '1743560963828'
+      position:
+        x: 380
+        y: 282
+      positionAbsolute:
+        x: 380
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#1750753377723.files#}}'
+        desc: ''
+        selected: false
+        title: 回答
+        type: answer
+        variables: []
+      height: 105
+      id: '1747459454147'
+      position:
+        x: 2486.727874741184
+        y: 282
+      positionAbsolute:
+        x: 2486.727874741184
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        is_array_file: false
+        selected: false
+        title: 会議情報
+        type: document-extractor
+        variable_selector:
+        - '1743560901339'
+        - information
+      height: 92
+      id: '1747670985857'
+      position:
+        x: 380
+        y: 540
+      positionAbsolute:
+        x: 380
+        y: 540
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1749779935664'
+          - text
+        desc: ''
+        model:
+          completion_params:
+            max_tokens: 32768
+            temperature: 0.3
+          mode: chat
+          name: gpt-4.1
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: 17e1367c-eb99-4bae-bbd2-e59ffaa586e2
+          role: system
+          text: "# 指示: ステップ2 - 「今回進捗」の抽出・記述 (議事録からの更新) - 入力厳格化・指示再々強調版\n\nあなたは、提供されたタスク情報と**最新の会議文字起こしデータ**を基に、タスク情報を更新するアシスタントです。\n\
+            あなたの任務は、各タスクについて、**「前回進捗_維持」フィールドには前ステップから引き継いだ過去の進捗をそのまま記述**し、**「今回進捗」フィールドには今回の会議での具体的な進捗状況のみを、議事録から完全に新規に抽出して記述すること**です。\n\
+            \n以下の入力情報を厳密に参照して処理を行います:\n1.  **\"タスクリスト\"{{#context#}}:**\n    各タスクの情報（タスクID、プロジェクト名、初期_議題、初期_課題、タスク名、担当者、初期_ステータス、初期_期限、**初期_前回進捗**\
+            \ など）がパイプ「|」区切りで記述されています。\n    **特に「初期_前回進捗」フィールドの内容は、過去の会議までの進捗です。この内容は、このステップの出力において「前回進捗_維持」フィールドにそのままコピーされます。**\n\
+            \    もし、この\"タスクリスト\" の最初のタスクの「タスクID」が「情報なし」である場合、または\"タスクリスト\"が実質的に有効なタスク情報を含まないと判断できる場合は、それは新規の会議であり、既存タスクの更新は行わず、手順Cの新規タスク抽出のみを重点的に実行してください。\n\
+            2.  **最新の会議の\"文字起こしデータ\"{{#1743560958023.text#}}:**\n    これが**今回の会議に関する唯一の議論内容の情報源**です。このテキストの冒頭にテーブル定義のような不要な情報が含まれている場合は、それを無視し、純粋な会議の議論内容（発言者の発言など）のみを抽出・参照対象とします。\n\
+            3.  **最新の会議の\"会議情報\"{{#1747670985857.text#}}:**\n    この情報源から**「処理対象の会議日」を正確に抽出してください。**\
+            \ この日付は、「今回進捗」フィールドのプレフィックスに使用します。\n    （例: 会議情報テキスト内に「開催日 | ... | 2025-06-09\
+            \ ...」とあれば、「2025-06-09」を処理対象の会議日とします。）\n\n**処理手順:**\n\n**最初に、\"タスクリスト\"\
+            の内容を確認します。もし、\"タスクリスト\"の最初のタスクの「タスクID」が「情報なし」である、または\"タスクリスト\"が実質的に有効なタスク情報を含まないと判断できる場合は、以下の処理手順AおよびBをスキップし、処理手順C（新規タスクの特定と追加）のみを実行してください。**\n\
+            **それ以外の場合\"タスクリスト\"に有効な既存タスクが含まれる場合）は、処理手順A、B、Cを順番に実行してください。**\n\nA. **既存タスクの情報の維持・最小限の更新\
+            \ (既存タスクが存在する場合のみ実行):**\n    \"タスクリスト\"内の各タスク（「タスクID」が「情報なし」でないタスク）について、以下の情報を基本的に維持しつつ、必要に応じて\
+            \ \"文字起こしデータ\"に基づき更新します。\n    *   タスクID: \"タスクリスト\"から取得した「タスクID」をそのまま維持します。\n\
+            \    *   プロジェクト名: \"タスクリスト\"から取得した「プロジェクト名」をそのまま維持します。\n    *   議題: \"\
+            タスクリスト\"から取得した「初期_議題」をそのまま維持します。\n    *   課題: \"タスクリスト\"から取得した「初期_課題」をそのまま維持します。\n\
+            \    *   タスク名: \"タスクリスト\"から取得した「タスク名」をそのまま維持します。\n    *   担当者: \"タスクリスト\"\
+            から取得した「担当者」を維持します。（\"文字起こしデータ\"で明確な変更指示があれば更新します。）\n    *   ステータス: \"\
+            文字起こしデータ\" を基に、タスクの最新状況を判断し更新します。（明確な言及がなければ \"タスクリスト\"から取得した「初期_ステータス」を維持します。）\n\
+            \    *   期限: \"文字起こしデータ\"を基に、新たな期限や変更があれば更新します。（明確な言及がなければ \"タスクリスト\"\
+            から取得した「初期_期限」を維持します。）\n    *   **前回進捗_維持:** **このフィールドには、\"タスクリスト\"の該当タスクの「初期_前回進捗」フィールドの値を、一字一句そのままコピーしてください。絶対に\"\
+            文字起こしデータ\"の内容で変更したり、プレフィックスを付けたりしないでください。**\n\nB. **「今回進捗」フィールドの生成 (既存タスクが存在する場合のみ実行):**\n\
+            \    \"タスクリスト\"内の各タスク（「タスクID」が「情報なし」でないタスク）について、以下の手順で**「今回進捗」**の値を、**\"\
+            文字起こしデータ\"と\"会議情報\"のみから完全に新規に生成**してください。\n    **このフィールドには、\"文字起こしデータ\"\
+            で議論された具体的な内容のみを記述してください。\"タスクリスト\"の「初期_前回進捗」の内容（つまり過去の進捗）は、この「今回進捗」フィールドには一切含めてはいけません。**\n\
+            \n    1.  \"会議情報\"から**「処理対象の会議日」を正確に抽出**します。\n    2.  プレフィックスとして「【[上記1で抽出した処理対象の会議日]の会議での状況】」という文字列を必ず出力します。\n\
+            \    3.  次に、必ず改行します。\n    4.  次に、\"文字起こしデータ\"を参照し、現在処理中のタスクの「タスク名」、「初期_議題」、「初期_課題」（これらは\
+            \ \"タスクリスト\"から引き継いだ情報）に最も関連性の高い、**今回の会議での純粋な議論内容、決定事項、確認事項、依頼事項、新しい課題、懸念点などを、具体的かつ詳細に出力します。**\
+            \ 議事録の冒頭にあるテーブル定義のような構造情報は絶対に含めないでください。\n    5.  もし、現在処理中のタスクに関する具体的な言及が\"\
+            文字起こしデータ\"に一切見当たらなかった場合は、「この会議では特筆すべき進捗や議論なし。」と明確に出力します。\n    6.  タスクが今回の会議で「完了」と判断される場合は、上記4または5の記述の後に、改行し、その旨と完了に至った経緯（誰が何を報告し、誰が確認したかなど）を具体的に記述してください。\n\
+            \nC. **新規タスクの特定と追加 (常に実行、ただし既存タスクがない場合はIDの扱いに注意):**\n    \"文字起こしデータ\"\
+            を精査し、**もし\"タスクリスト\"の最初のタスクの「タスクID」が「情報なし」でない場合（つまり既存タスクが存在する場合）は、\"タスクリスト\"\
+            には存在しない新しいタスクを特定します。もし \"タスクリスト\"の最初のタスクの「タスクID」が「情報なし」である場合（つまり新規の会議の場合）は、議事録から全てのタスクを新規タスクとして抽出します。**\n\
+            \    新規タスクには、**もし\"タスクリスト\"の最初のタスクの「タスクID」が「情報なし」でない場合は \"タスクリスト\"の最大タスクIDに続く新しいタスクIDを割り当て、もし\"\
+            タスクリスト\"の最初のタスクの「タスクID」が「情報なし」である場合はタスクIDを1から連番で割り当ててください。**\n    新規タスクについて、以下の情報を\"\
+            文字起こしデータ\" と\"会議情報\"から抽出・生成してください。\n    *   プロジェクト名（議事録から抽出。特定できない場合は「その他」または「未分類」とします。）\n\
+            \    *   議題（議事録から抽出します。）\n    *   課題（議事録から抽出します。）\n    *   タスク名（議事録から具体的なタスク名を生成します。）\n\
+            \    *   担当者（議事録で言及があればその担当者、なければ「未定」とします。）\n    *   ステータス（通常は「新規登録」とします。）\n\
+            \    *   期限（議事録で言及があればその期限（YYYY-MM-DD形式）、なければ「未定」とします。）\n    *   **前回進捗_維持:**\
+            \ 新規タスクであるため、「情報なし」または空欄とします。\n    *   **今回進捗:** \"文字起こしデータ\"から処理対象の会議日を読み取り、「【[処理対象の会議日]の会議での状況】会議内で新規に発生。関連する議論内容（誰が何を提案し、何が決定されたか、どのような背景で発生したか等）、期待される成果などを具体的に記述してください。」の形式で記述します。\n\
+            \n**出力形式:**\n既存タスクと新規タスクを合わせて、各タスク情報を以下の形式で1行ずつ記述し、パイプ「|」で区切ってください。**必ず10個のフィールドを出力してください。**\
+            \ 新規タスクの場合は、最後のフィールドに「新規」と記載し、既存タスクの場合は空欄としてください。末尾に不要な文字（例: \"0\"）を付加しないでください。\n\
+            \n【出力形式】\nタスクID | プロジェクト名 | 議題 | 課題 | タスク名 | 担当者 | ステータス | 期限 | **前回進捗_維持**\
+            \ | **今回進捗** | 新規フラグ"
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 1000
+        selected: false
+        title: 2:「今回進捗」の抽出・記述
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 115
+      id: '1747791374947'
+      position:
+        x: 985.7125463857319
+        y: 282
+      positionAbsolute:
+        x: 985.7125463857319
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1747791374947'
+          - text
+        desc: ''
+        model:
+          completion_params:
+            max_tokens: 32768
+            temperature: 0.5
+          mode: chat
+          name: gpt-4.1
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: 1ae5abeb-c990-40fd-a6b0-6ac19c8d122e
+          role: system
+          text: "# 指示: ステップ3 - 会議レビューと推奨アクションの生成\n\nあなたは、提供されたタスク情報と会議のコンテキスト情報を基に、建設的なレビューとアクションを提案するアシスタントです。**単なる状況説明や一般的な助言ではなく、その会議の具体的な議論、決定事項、そしてそこから読み取れる「課題の本質」「隠れたリスクや機会」「参加者の行動の意図とその戦略的影響」を深く洞察し、プロジェクトの成功に真に貢献する、戦略的で実行可能なレビューとアクションを生成してください。**\n\
+            \n以下の入力ファイルを使用します:\n1. \"タスクリスト\" {{#context#}} (タスクID、プロジェクト名、議題、課題、タスク名、担当者、ステータス、期限、**前回進捗_維持**、**今回進捗**\
+            \ などが含まれる)\n2. \"会議情報\" {{#1747670985857.text#}} (会議名、参加者リスト、会議のゴールなどの会議コンテキスト情報を参照)\n\
+            3.  \"文字起こしデータ\"{{#1743560958023.text#}} (参加者の具体的な発言や貢献をより詳細に参照するために使用。「前回進捗_維持」と「今回進捗」と合わせて総合的に判断)\n\
+            \n\"タスクリスト\" の各タスクについて、以下の情報を生成してください。**各タスクについて、必ず3つのフィールドをパイプ「|」で区切って出力してください。各レビュー項目やアクションについて、情報が不足している場合でも、必ずその旨を示すプレースホルダーテキスト（後述の「情報が乏しく具体的な指摘が困難な場合は～」のような記述）を入れてください。絶対に列を空にしないでください。**\n\
+            \n*   **タスクID:** (\"タスクリスト\"から引用)\n*   **会議レビュー:**\n    *   **\"タスクリスト\"\
+            \ の「今回進捗」（＝最新の会議での状況）を最重要の根拠**としつつ、**「前回進捗_維持」も参照してタスクの経緯を考慮**し、\"会議情報\"\
+            \ の会議コンテキスト情報、および必要に応じて \"文字起こしデータ\"の詳細な発言内容を総合的に参照し、以下を構造的に記述してください。\n\
+            \    *   「今回進捗」が「この会議では特筆すべき進捗や議論なし」等の場合は、レビューもそれを踏まえた限定的なものとし、その旨を明記してください。\n\
+            \    *   **【不足点】:**\n        *   **思考のポイント:** 「今回進捗」で記述されたその会議での状況や決定事項、および「前回進捗_維持」から読み取れる経緯を分析し、「このタスクのゴール（\"\
+            会議情報\"参照）や課題解決に向けて、今回の会議の議論を経てもなお、**何が本質的に未解決で、プロジェクトの成功を阻害する可能性のある最重要課題は何か？**\
+            \ 表面的な合意の裏に潜む曖昧さ、見落とされているリスク、あるいは考慮されていない代替案は何か？ 具体的な仕様、スコープ、リソース、依存関係、品質基準などで、**放置すれば致命的な問題に発展しうるクリティカルな不明確点**は何か？\
+            \ その不明確さが現実になった場合、どのような**具体的な悪影響（コスト増、納期遅延、品質低下、顧客満足度低下など）**が考えられるか？」を徹底的に掘り下げてください。\n\
+            \        *   **記述内容:** 上記の思考プロセスに基づき、依然として不足している情報、明確化が必要な事項、次に検討すべき論点を具体的に指摘してください。**なぜそれが本質的な不足点と言えるのか、その不足がプロジェクトにどのような深刻な影響を与えうるのかまで、具体的なリスクシナリオを示唆しながら論理的に記述してください。**\n\
+            \        *   **質の高い不足点の記述例:** 「 ①初期開発スコープ3機能の合意は大きな前進だが、各機能の**具体的なユーザー受入テスト(UAT)基準と、その基準を満たすための詳細な機能仕様（特にエラーハンドリングとエッジケースの挙動）が定義されていない。**\
+            \ これが曖昧なままNoviq社に開発を委託すると、納品後の認識齟齬による大規模な手戻りや、最悪の場合UAT不合格によるリリース延期のリスクが非常に高い。②また、汎用化方針は決定したが、**将来的な機能追加や他店舗展開を見据えた具体的なアーキテクチャ設計（拡張性、保守性、データ連携インターフェースなど）に関する議論が一切なされておらず、**\
+            \ 目先の開発に追われることで将来の技術的負債を抱え込む懸念がある。③FAQ画像問題の解決策（テキスト化担当・期限・手法）が未定なのは、関連機能の実装遅延に直結するクリティカルな課題であり、放置は許されない。」\n\
+            \        *   **情報が乏しく具体的な指摘が困難な場合は、必ず「今回の会議の議論内容からは、現時点で本質的な不足点を具体的に特定することは困難です。タスクの目標と現状の再確認、および関連情報の収集が優先されます。」のように記述してください。**\n\
+            \    *   **【参加者評価】:**\n        *   **思考のポイント:** \"会議情報\" の「参加者リスト」と \"\
+            文字起こしデータ\" を照合し、「このタスクに関して、各参加者はその役割と責任において、**会議のゴール達成とプロジェクトの成功に向けて、どのような戦略的かつ建設的な発言や行動をしたか？**\
+            \ 議論を本質的な方向に導いたか、あるいは表面的な議論に終始させたか？ 重要な意思決定プロセスにおいて、どのようなリーダーシップを発揮し、その判断は適切だったか？\
+            \ チーム全体の視点からリスクを指摘したり、革新的なアイデアを提供したりする貢献はあったか？ その行動や発言が、他の参加者や会議全体の雰囲気にどのような影響を与えたか？」を深く評価してください。**単なる行動の列挙ではなく、その行動が持つ戦略的な意味合いやチームへの影響（ポジティブ/ネガティブ）を簡潔かつ的確に評価してください。**\n\
+            \        *   **記述内容:** 上記の思考プロセスに基づき、このタスクに関連する**各主要参加者の具体的な発言や行動を引用または具体的に要約**し、それが**その会議におけるタスクの進行、課題解決、意思決定の質、そしてプロジェクト全体の目標達成にどのように戦略的に貢献したか、あるいはどのような影響（ポジティブ/ネガティブ）を与えたか**を客観的かつ評価的に記述してください。\n\
+            \        *   **質の高い参加者評価の記述例:** 「①原佑斗氏（開発者）は、9機能分岐案という具体的な叩き台を提供し、議論の方向性を初期段階で明確に示した。また、汎用性重視という戦略的判断を主導し、プロジェクトの長期的な視点を提示した点は高く評価できる。②岡上氏（開発者）は、フラワーレメディ特化型開発という代替案を提示することで、議論に多角的な視点をもたらし、技術的な実現可能性や課題（FAQの画像問題）を早期に指摘した。見積もり対応への迅速なコミットメントもプロジェクト推進に貢献。③菅田氏（PM）は、議論のファシリテーションと論点整理に努めたが、FAQテキスト化のような具体的な課題解決の担当割り振りや期限設定、リスク管理といったPMとしてのプロアクティブなアクションがやや不足していた。④原氏（最終決定者）の不在は、重要方針の最終確認やリソース配分に関する意思決定の遅延リスクを内包しており、今後の会議運営での検討課題である。」\n\
+            \        *   **関連する発言や行動が見当たらない場合は、必ず「今回の会議では、このタスクに関する主要参加者の特筆すべき戦略的な発言や行動は限定的でした。今後の積極的な関与が期待されます。」のように記述してください。**\n\
+            \    *   **【AIアドバイス】:**\n        *   **思考のポイント:** 上記①の本質的な不足点、②の参加者の状況、そして\
+            \ `テーブル定義.txt` の「会議のゴール」を総合的に考慮し、「このタスク、ひいてはプロジェクト全体を成功に導くために、**今、最も優先して取り組むべき戦略的課題は何か？**\
+            \ その課題を解決するための、**具体的で革新的、かつ実行可能なアプローチは何か？** 潜在的なリスクを最小化し、機会を最大化するためには、どのような視点の転換やプロセスの改善が必要か？\
+            \ チームの能力を最大限に引き出し、より高い成果を生み出すために、どのようなリーダーシップやコミュニケーションが求められるか？」を深く、多角的に考察してください。\n\
+            \        *   **記述内容:** 上記の思考プロセスに基づき、このタスクをより効果的かつ効率的に推進するための**具体的かつ実行可能な改善策、次に取るべき戦略的アプローチ、視点を変える提案、または深掘りすべき重要な論点**などを建設的に記述してください。**単なる作業指示ではなく、プロジェクトの成功の本質に迫る、洞察に満ちた提言を期待します。**\n\
+            \        *   **質の高いAIアドバイスの記述例:** 「①初期スコープ機能のUAT基準を含む詳細な要件定義の欠如は、プロジェクト初期における致命的なリスクである。Noviq社を交えた**共同要件定義ワークショップ（JADセッション）の開催を最優先で検討すべき。**これにより、期待値の齟齬を根本から解消し、開発着手後の手戻りを劇的に削減できる。②汎用化アーキテクチャについては、目先の機能実装と並行して、**専任のアーキテクト（またはそれに準じる役割の者）が将来の拡張性・保守性・技術的負債を考慮した設計思想を策定し、定期的にチームレビューを受ける体制**を構築する必要がある。③FAQの画像問題は、短期的な解決策（OCRでの暫定テキスト化と手動修正）と中長期的な解決策（マルチモーダルAIによる画像内容理解と対話生成機能のPoC実施）を**ロードマップとして具体的に計画し、リソースと期待効果を比較検討した上で段階的に推進すべき。**\
+            \ ④原氏（最終決定者）の意思決定を迅速化するため、会議前に論点、選択肢、各選択肢のメリット・デメリット・リスクを明記した**意思決定支援資料（Decision\
+            \ Memo）を作成し、事前説明を行うプロセス**を導入することを推奨する。」\n        *   **情報が乏しく具体的なアドバイスが困難な場合は、必ず「現状の情報と議論の深さからは、戦略的なAIアドバイスを具体的に生成することは困難です。まずは特定された不足点の解消と、タスクの目標達成に向けた計画立案、関連情報の収集と分析を優先すべきです。」のように記述してください。**\n\
+            \    *   (複数行になる場合は、Markdownの改行ルールに従ってください。例: 行末に半角スペース2つ、または `<br>` タグを使用)\n\
+            *   **推奨アクション:**\n    *   \"タスクリスト\" の「今回進捗」で記述された**その会議での決定事項、合意内容、明らかになった課題**、および上記の「会議レビュー」（特にAIアドバイス）を踏まえ、このタスクを次に進めるために必要な**具体的で実行可能なアクションプラン**を記述してください。\n\
+            \    *   **「今回進捗」が「この会議では特筆すべき進捗や議論なし」等の場合は、「 【担当者: [タスク担当者]】 - このタスクの現状課題と目標達成への障壁を再特定し、具体的な打開策とアクションプランを策定して次回会議で提案する（次回会議まで）。特に、なぜこの会議で進捗がなかったのか、その根本原因を分析し報告すること。」のような、より能動的で問題解決志向、かつ原因究明を促すアクションを記述してください。**\n\
+            \    *   **もし上記のような具体的なアクションも提案できないほど情報が不足している場合は、必ず「 【担当者: [タスク担当者]】\
+            \ - 最新の会議で本タスクに関する具体的な議論や進捗がなかったため、まずは現状の課題と必要なアクションを再整理し、次回会議で報告する（次回会議まで）。」のように記述してください。**\n\
+            \    *   形式は「 【担当者】: アクション内容（期限目安）」を基本とし、複数のアクションがある場合は箇条書き（各アクションの前に「・」）にしてください。**期限は可能な限り具体的に設定し、各アクションがSMART（Specific,\
+            \ Measurable, Achievable, Relevant, Time-bound）であり、かつ会議レビューで指摘された課題解決に直結するものであることを意識してください。**\n\
+            \    *   **質の高い推奨アクションの記述例:** 「・ 【菅田氏（PM）、原佑斗氏（開発者）】: 初期スコープ3機能に関する**UAT基準を含む詳細要件定義ワークショップ**をNoviq社と2025/05/22までに実施し、その結果を反映した要件定義書を2025/05/23までに最終化、全関係者で合意する。<br>・\
+            \ 【原佑斗氏（開発者）】: 汎用化アーキテクチャの基本方針（技術選定、拡張性・保守性の考慮点、主要コンポーネント案など）に関する**ディスカッションペーパー（たたき台）**を作成し、次回会議（2025/05/27）で提示、チームレビューを実施する。<br>・\
+            \ 【菅田氏（PM）】: フラワーレメディFAQの画像テキスト化について、OCRツール評価（精度、コスト）、手動作成工数見積もり（担当者、期間）、外部委託オプション調査（費用、納期、品質）を2025/05/24までに完了し、**コスト対効果と実現可能性を比較検討した上で最適な対応策を決定、担当者をアサインし具体的な作業計画と共に作業を開始させる（2025/05/31完了目標）。**<br>・\
+            \ 【原佑斗氏（開発者）、菅田氏（PM）】: 追加6機能について、Noviq社が見積もりを作成するために必要な詳細情報（期待機能レベル、UIイメージ、データ連携要件、既存システム連携の有無、想定される利用シナリオなど）を網羅した**RFP（提案依頼書）ドラフト**を作成し、2025/05/22までに岡上氏に提供する。」\n\
+            \    *   会議で明確な担当者や期限が言及されなかった場合は、AIが適切と判断する担当者や期限目安を提案として記述してください。\n\
+            \    *   (複数行になる場合は、Markdownの改行ルールに従ってください。)\n\n【出力形式】\nタスクID | 会議レビュー\
+            \ | 推奨アクション"
+        - id: d0eb5f31-270f-4813-a705-f0a644a0e505
+          role: user
+          text: ''
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 1000
+        selected: false
+        title: 3:会議レビューと推奨アクションの生成
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 115
+      id: '1747793534610'
+      position:
+        x: 1291.5258945758546
+        y: 282
+      positionAbsolute:
+        x: 1291.5258945758546
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1747904475697'
+          - text
+        desc: ''
+        model:
+          completion_params:
+            max_tokens: 32768
+            temperature: 0
+          mode: chat
+          name: gpt-4.1
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: bf72372f-074e-4f26-9bfe-4f961f5b1838
+          role: system
+          text: "# 指示: ステップ5 - 最終Markdownテーブル生成 (新列構成・並べ替えなし)\n\nあなたは、これまでのステップで生成された複数のテキストファイルを基に、最終的なタスク一覧表をMarkdown形式で生成するエキスパートAIです。あなたの唯一のタスクは、指定された形式でMarkdownテーブルを生成することです。**説明文や前置きは一切不要です。**\n\
+            \n以下の入力データを参照して処理を行います:\n1.  **\"STEP1の出力データ\" {{#1749779935664.text#}}:**\
+            \ (タスクID | プロジェクト名 | ...)\n2.  **\"STEP2の出力データ\" {{#1747791374947.text#}}:**\
+            \ (タスクID | プロジェクト名 | ...)\n3.  **\"STEP3の出力データ\" {{#1747793534610.text#}}:**\
+            \ (タスクID | 会議レビュー | ...)\n4.  **\"STEP4の出力データ\" {{#context#}}:** (タスクID\
+            \ | 並べ替え用_総合スコア | ...)\n\n**処理手順:**\n\n1.  **タスクデータの結合:**\n    *   \"\
+            STEP1の出力データ\", \"STEP2の出力データ\", \"STEP3の出力データ\", \"STEP4の出力データ\" の内容を、「タスクID」をキーとして正確に結合してください。\n\
+            \    *   各タスクについて、以下の最終的な情報を整理します：\n        *   プロジェクト名 (出典: \"STEP2の出力データ\"\
+            )\n        *   議題 (出典: \"STEP2の出力データ\")\n        *   課題 (出典: \"STEP2の出力データ\"\
+            )\n        *   タスク名 (出典: \"STEP2の出力データ\")\n        *   担当者 (出典: \"STEP2の出力データ\"\
+            )\n        *   ステータス (出典: \"STEP2の出力データ\")\n        *   期限 (出典: \"STEP2の出力データ\"\
+            \"情報なし\"の場合は空欄、\"未定\"の場合は\"未定\"と表示)\n        *   **前回進捗** (出典: \"STEP2の出力データ\"\
+            \ の「前回進捗_維持」)\n        *   **今回進捗** (出典: \"STEP2の出力データ\" の「今回進捗」)\n  \
+            \      *   会議レビュー (出典: \"STEP3の出力データ\")\n        *   推奨アクション (出典: \"STEP3の出力データ\"\
+            )\n        *   *（以下のスコアフィールドは最終テーブルには表示しませんが、データとしては保持しておきます）*\n     \
+            \   *   *並べ替え用_総合スコア (出典: \"STEP4の出力データ\")*\n        *   *並べ替え用_緊急度スコア\
+            \ (出典: \"STEP4の出力データ\")*\n\n2.  **タスク一覧の並べ替え:**\n    *   **(このステップでは並べ替え処理を行いません。入力されたタスクの順序のまま出力します。)**\n\
+            \n3.  **タスク一覧の出力フォーマット:**\n    *   **以下の新しい列構成のMarkdownテーブル形式で、最終的なタスク一覧表を生成してください。これ以外のテキストは絶対に出力しないでください。**\n\
+            \    *   「項番」は、入力されたタスクの順序（通常はタスクID順）に基づいて1から連番を振ってください。\n    *   ヘッダー行と区切り行は、以下の例に厳密に従ってください。\n\
+            \    *   各セル内のテキストについて、複数行にわたる場合は、Markdownの改行ルール（例: `<br>` タグを適切に使用）を適用してください。\n\
+            \n**最終タスク一覧出力フォーマット (Markdown) - 必ずこの形式で出力してください:**\n| 項番 | プロジェクト | 議題\
+            \ | 課題 | タスク | 担当者 | ステータス | 期限 | **前回進捗** | **今回進捗** | 会議レビュー | 推奨アクション\
+            \ |\n|---|---|---|---|---|---|---|---|---|---|---|---|\n<!-- ここに各タスクの行が続く。各行は12個のフィールドを持つ。\
+            \ -->\n\n**上記はヘッダーと区切り行の例です。全てのタスクをこの形式のテーブル内に出力してください。**\n**非常に重要:**\n\
+            出力は、上記のMarkdownタスク一覧テーブルのみとしてください。それ以外のテキスト（説明文、JSONラッパーなど）は一切含めないでください。\n\
+            タスク一覧テーブルは、必ず指定された12列で出力してください。\n**すべてのタスクが処理され、テーブルに含まれていることを確認してください。**\n\
+            最終出力の前に、誤字脱字がないか、情報が正確に反映されているかを確認してください。"
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 1000
+        selected: true
+        structured_output_enabled: false
+        title: '5:最終テーブル生成 '
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 115
+      id: '1747793787311'
+      position:
+        x: 1891.746432178403
+        y: 282
+      positionAbsolute:
+        x: 1891.746432178403
+        y: 282
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1747791374947'
+          - text
+        desc: ''
+        model:
+          completion_params:
+            max_tokens: 32768
+            temperature: 0.1
+          mode: chat
+          name: gpt-4.1
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: 302ed67b-fb50-4c4f-8cf7-873e33d511e9
+          role: system
+          text: "# 指示: ステップ4 - 優先度スコアリング (並べ替え用・非出力)\n\nあなたは、提供されたタスク情報と優先度決定方針を基に、タスクの優先度を評価するアシスタントです。このステップで生成されるスコアは最終的なMarkdownテーブルには表示されませんが、次のステップでの並べ替えに使用されます。\n\
+            \n以下の入力ファイルを使用します:\n1.  \"タスクリスト\"{{#context#}} (タスクID、**今回進捗**、議題、課題などが含まれる)\n\
+            2. \"会議情報\" {{#1747670985857.text#}} (ここから「優先度決定方針」の評価観点を参照してください)\n\n\
+            \"タスクリスト\"の各タスクについて、以下の情報を生成してください。**各タスクについて、必ず以下のフィールドをパイプ「|」で区切って出力してください。スコアが算出できない場合は「0」または「0.00」と記載してください。**\n\
+            \n*   **タスクID:** (\"タスクリスト\"から引用)\n*   **並べ替え用_総合スコア:**\n    *   \"会議情報\"\
+            の「優先度決定方針」に記載されている各評価観点（例: 緊急度, 影響範囲, 実現可能性, コスト対効果, 前提条件度）について、\"タスクリスト\"\
+            \ の「今回進捗」「議題」「課題」などを総合的に考慮し、各観点を1から5の5段階でスコアリングします（5が最も高い）。\n    *   これらの観点スコアを単純平均し、総合スコアを算出してください（小数点第2位まで）。この総合スコアは並べ替えに使用します。\n\
+            *   **並べ替え用_緊急度スコア:**\n    *   上記と同様に、「緊急度」観点のみで1から5のスコアを付けてください。これも並べ替えに使用します。\n\
+            \n【出力形式】\nタスクID | 並べ替え用_総合スコア | 並べ替え用_緊急度スコア"
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 1000
+        selected: false
+        title: 4:優先度スコアリング
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 115
+      id: '1747904475697'
+      position:
+        x: 1592.6234330781306
+        y: 282
+      positionAbsolute:
+        x: 1592.6234330781306
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1743560963828'
+          - text
+        desc: ''
+        model:
+          completion_params:
+            max_tokens: 32768
+            temperature: 0
+          mode: chat
+          name: gpt-4.1
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: d47342e8-789a-4c30-9c6b-bad28f5c6a76
+          role: system
+          text: "# 指示: ステップ1 - タスクリストの初期化とID付与 (過去タスク一覧からの読み込み) \nあなたは、提供されたExcel形式の過去のタスク一覧表から情報を抽出し、整理するアシスタントです。\n\
+            \n以下の入力ファイルを使用します:\n1. タスク一覧： {{#context#}}\n\nこの\"タスク一覧\"から、各タスクについて以下の情報を抽出し、指定された形式で出力してください。\n\
+            **もし \"タスク一覧\" にタスクデータ行が存在しない場合（ヘッダー行のみの場合など）でも、以下の各フィールドの指示に従い、該当する情報がない場合は指定されたデフォルト値を出力してください。その場合、出力されるのは1行分の「情報なし」で構成されたデータとなります。**\n\
+            \nタスクデータが存在する場合、および存在しない場合（デフォルト値出力）の各フィールドのルールは以下の通りです:\n\n1.  **タスクID:**\
+            \ \"タスク一覧\"の「項番」を抽出。存在しない場合は「情報なし」と記載。\n2.  **プロジェクト名:** \"タスク一覧\"の「プロジェクト」列から抽出。存在しない場合は「情報なし」と記載。\n\
+            3.  **初期_議題:** \"タスク一覧\"の「議題」列から抽出。存在しない場合は「情報なし」と記載。\n4.  **初期_課題:**\
+            \ \"タスク一覧\"の「課題」列から抽出。存在しない場合は「情報なし」と記載。\n5.  **タスク名:** \"タスク一覧\"の「タスク」列から抽出。存在しない場合は「情報なし」と記載。\n\
+            6.  **担当者:** \"タスク一覧\"の「担当者」列から抽出。存在しない場合は「未定」と記載。\n7.  **初期_ステータス:**\
+            \ \"タスク一覧\"の「ステータス」列から抽出。存在しない場合は「未着手」と記載。\n8.  **初期_期限:** \"タスク一覧\"の「期限」列から抽出。日付は「YYYY-MM-DD」形式に統一。存在しない場合は「情報なし」と記載。\n\
+            9.  **初期_前回進捗:** \"タスク一覧\"の「**今回進捗**」列（J列）から抽出。この内容は、新しいタスク一覧の「前回進捗」列にそのまま転記される情報となります。存在しない場合は「情報なし」と記載。\n\
+            10. **初期_会議レビュー:** \"タスク一覧\"の「会議レビュー」列から抽出。存在しない場合は「情報なし」と記載。\n11. **初期_推奨アクション:**\
+            \ \"タスク一覧\"の「推奨アクション」列から抽出。存在しない場合は「情報なし」と記載。\n\n出力は、各タスク情報を以下の形式で1行ずつ記述し、パイプ「|」で区切ってください。**必ず11個のフィールドを出力してください。**\n\
+            \n【出力形式】\nタスクID | プロジェクト名 | 初期_議題 | 初期_課題 | タスク名 | 担当者 | 初期_ステータス | 初期_期限\
+            \ | **初期_前回進捗** | 初期_会議レビュー | 初期_推奨アクション"
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 1000
+        selected: false
+        title: 1:タスクリストの初期化とID付与
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 115
+      id: '1749779935664'
+      position:
+        x: 683
+        y: 282
+      positionAbsolute:
+        x: 683
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        is_team_authorization: true
+        output_schema: null
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Markdown table text
+            ja_JP: Markdown table text
+            pt_BR: Markdown table text
+            zh_Hans: Markdown格式文本，必须为Markdown表格格式，可包含多个表格
+          label:
+            en_US: Markdown text
+            ja_JP: Markdown text
+            pt_BR: Markdown text
+            zh_Hans: Markdown格式文本
+          llm_description: ''
+          max: null
+          min: null
+          name: md_text
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Filename of the output file
+            ja_JP: Filename of the output file
+            pt_BR: Filename of the output file
+            zh_Hans: 输出文件名
+          label:
+            en_US: Filename of the output file
+            ja_JP: Filename of the output file
+            pt_BR: Filename of the output file
+            zh_Hans: 输出文件名
+          llm_description: ''
+          max: null
+          min: null
+          name: output_filename
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        params:
+          md_text: ''
+          output_filename: ''
+        provider_id: bowenliang123/md_exporter/md_exporter
+        provider_name: bowenliang123/md_exporter/md_exporter
+        provider_type: builtin
+        selected: false
+        title: Markdown to XLSX file
+        tool_configurations: {}
+        tool_label: Markdown to XLSX file
+        tool_name: md_to_xlsx
+        tool_parameters:
+          md_text:
+            type: mixed
+            value: '{{#1747793787311.text#}}'
+          output_filename:
+            type: mixed
+            value: タスク一覧
+        type: tool
+      height: 54
+      id: '1750753377723'
+      position:
+        x: 2193.7464321784028
+        y: 282
+      positionAbsolute:
+        x: 2193.7464321784028
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: 145.90305675495904
+      y: 142.16445886312613
+      zoom: 0.5588711336339628

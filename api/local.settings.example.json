@@ -1,0 +1,27 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "AUTH_TENANT_ID": "<tenant-id>",
+    "AUTH_AUDIENCE": "api://<api-client-id>",
+    "AUTH_REQUIRED_SCOPES": "access_as_user",
+    "AZURE_STORAGE_ACCOUNT_NAME": "<storage-account>",
+    "AZURE_STORAGE_ACCOUNT_KEY": "<storage-key>",
+    "AZURE_STORAGE_INPUT_CONTAINER": "transcripts",
+    "AZURE_STORAGE_OUTPUT_CONTAINER": "outputs",
+    "COSMOS_DB_ENDPOINT": "<cosmos-endpoint>",
+    "COSMOS_DB_KEY": "<cosmos-key>",
+    "COSMOS_DB_DATABASE_NAME": "AppDb",
+    "AZURE_OPENAI_ENDPOINT": "<openai-endpoint>",
+    "AZURE_OPENAI_API_KEY": "<openai-api-key>",
+    "AZURE_OPENAI_DEPLOYMENT": "gpt-4o-mini",
+    "WHISPER_DEPLOYMENT_NAME": "whisper-1",
+    "WEB_PUBSUB_CONNECTION_STRING": "<webpubsub-connection-string>",
+    "WEBPUBSUB_HUB_NAME": "updates"
+  },
+  "Host": {
+    "CORS": "*",
+    "CORSCredentials": true
+  }
+}

@@ -1,0 +1,58 @@
+.fileInfo {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background-color: #fafafa;
+    text-align: center;
+}
+  
+.fileInfo p {
+    margin: 0.5rem 0;
+    color: #374151;
+}
+  
+.exceedingTime {
+    color: #ef4444;
+    font-weight: bold;
+}
+  
+.warningContainer {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background-color: #fee2e2;
+    border: 1px solid #fca5a5;
+    border-radius: 6px;
+}
+  
+.warning {
+    color: #b91c1c;
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+    .fileInfo {
+        background-color: #1f2937;
+        border-color: #4b5563;
+        color: #e5e7eb;
+    }
+    
+    .fileInfo p {
+        color: #e5e7eb;
+    }
+    
+    .exceedingTime {
+        color: #f87171;
+    }
+    
+    .warningContainer {
+        background-color: #7f1d1d;
+        border-color: #991b1b;
+    }
+    
+    .warning {
+        color: #fca5a5;
+    }
+} 

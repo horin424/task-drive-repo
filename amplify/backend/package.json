@@ -1,0 +1,16 @@
+{
+  "name": "overrides",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "@aws-amplify/cli-extensibility-helper": "^3.0.33",
+    "@aws-crypto/sha256-js": "^5.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  }
+}

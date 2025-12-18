@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "storage": {
+      "Organization:@model(appsync)": [
+        "read",
+        "update"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

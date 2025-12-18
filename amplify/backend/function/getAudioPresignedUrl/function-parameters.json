@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "api": {
+      "transcriptminute": [
+        "Query"
+      ]
+    },
+    "storage": {
+      "s31d11b5d9": [
+        "read"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

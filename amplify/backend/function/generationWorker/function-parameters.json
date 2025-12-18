@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "api": {
+      "transcriptminute": [
+        "Query",
+        "Mutation"
+      ]
+    },
+    "storage": {
+      "Organization:@model(appsync)": [
+        "read"
+      ]
+    }
+  },
+  "lambdaLayers": [],
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "difyApiUrl",
+      "environmentVariableName": "DIFY_API_URL"
+    },
+    {
+      "cloudFormationParameterName": "secretsManagerSecretArn",
+      "environmentVariableName": "SECRETS_MANAGER_SECRET_ARN"
+    },
+    {
+      "cloudFormationParameterName": "storageOutputbucketBucketname",
+      "environmentVariableName": "STORAGE_OUTPUTBUCKET_BUCKETNAME"
+    }
+  ]
+}

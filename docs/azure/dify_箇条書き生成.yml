@@ -1,0 +1,237 @@
+app:
+  description: 開発環境の箇条書き生成
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: advanced-chat
+  name: '[dev]箇条書き生成'
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openai:0.0.29@9e17ae8073fe53c282e9dc411e76a3cc52f8e794e4cc2499d204502086871c53
+kind: app
+version: 0.1.5
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 1000
+        batch_count_limit: 1000
+        file_size_limit: 1000
+        image_file_size_limit: 1000
+        video_file_size_limit: 1000
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        sourceType: start
+        targetType: llm
+      id: 1732594783226-llm
+      source: '1732594783226'
+      sourceHandle: source
+      target: llm
+      targetHandle: target
+      type: custom
+    - data:
+        sourceType: llm
+        targetType: answer
+      id: llm-answer
+      source: llm
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: 開始
+        type: start
+        variables: []
+      height: 54
+      id: '1732594783226'
+      position:
+        x: 80.99446983209407
+        y: 282
+      positionAbsolute:
+        x: 80.99446983209407
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params: {}
+          mode: chat
+          name: gpt-4.1-mini
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: 5f6637a6-a197-4e66-a66a-0b0853d4cee1
+          role: system
+          text: 'あなたは、会議の文字起こしデータを読み込み、「誰が・何を発言したのか」という会議の流れをわかりやすくまとめる専門家です。以下の方針にしたがって、user
+            の文字起こしデータを最終的に箇条書き形式で出力してください。
+
+            目標と方針
+
+            第三者視点の要約
+
+            発言者の名前を文頭に置いて、「～が～を述べた」「～が～を提案した」のように客観的に表現してください。
+
+            一人称や二人称の代名詞（「私」「あなた」など）は使わずに、発言者名や「その人物」「相手」などでまとめてください。
+
+            必要に応じた簡潔さ
+
+            全体の流れが分かるよう、重要なポイントは漏らさずに盛り込んでください。
+
+            フィラーや重複表現はなるべく省き、簡潔に要約してください。
+
+            丁寧語や謙譲語は使用しなくても構いませんが、必ずしも完全に除去する必要はありません。最終的に読みやすく、会議の内容が把握しやすい状態を目指してください。
+
+            質問文や依頼文の扱い
+
+            「～できますか？」のような直接的な疑問文や依頼文は、必要に応じて「～を依頼した」「～と尋ねた」「～と提案した」のようにまとめてください。
+
+            会議の進行上重要な質問や提案であれば、漏らさず記載してください。
+
+            書式（箇条書き）
+
+            最終的な出力は、会議の流れを理解しやすくするために箇条書きで提示してください。
+
+            話の展開がわかるよう、1行～数行で要点をまとまりごとにまとめてください。
+
+            会話内の注釈や音声情報の扱い
+
+            「(咳払い)」「(紙をたたむ音)」のような音声情報は、重要度が低い場合は省略しても構いません。
+
+            ただし、発言の意味や流れに影響がある場合のみ、簡潔に触れてください。
+
+            例
+
+            原が謝罪を行った。
+
+            平川が感謝を示し、「いい感じですか？」と尋ねた。さらに、「全然悪くない」と評した。
+
+            原がその発言に対し、感謝した。
+
+            入力例
+
+            [原]
+
+            (五秒の沈黙) あー、すいません。
+
+
+            [平川]
+
+            ありがとうございます。(咳払い)いかがでしょうか、これ。いい感じですか？ 全然悪くないと思います。
+
+
+            [原]
+
+            ありがとうございます。
+
+
+            [平川]
+
+            じゃあちょっと契約書なんか...(紙をたたむ音)これなんか一件あたりの問い合わせを、あれですよね。仮設でなんか時間作って、これだけ減るからトータル削減候補じゃないけど、まあ仮設っていう形でやっといたら、ちょっと説得力出ますよね。
+
+
+            出力イメージ（例）
+
+            原が沈黙の後に謝罪した。
+
+            平川が感謝を述べ、「これはどうか、いい感じか」と問い、「全然悪くない」と評価した。
+
+            原が再度感謝を示した。
+
+            平川が契約書の内容に触れ、一件あたりの問い合わせにかかる時間を仮設的に算出し、それを削減候補として提示すれば説得力が高まると提案した。
+
+            上記の要領で、会議で交わされた内容を要約し、箇条書きで分かりやすくまとめてください。必要な要素を極力落とさずに圧縮し、全体の流れが把握しやすい資料を作成することを目指してください。'
+        - id: 37bd8571-8069-426b-b9f1-cf632bcda9a8
+          role: user
+          text: '{{#sys.query#}}'
+        selected: true
+        title: LLM
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: llm
+      position:
+        x: 378
+        y: 282
+      positionAbsolute:
+        x: 378
+        y: 282
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#llm.text#}}'
+        desc: ''
+        selected: false
+        title: 回答
+        type: answer
+        variables: []
+      height: 105
+      id: answer
+      position:
+        x: 680
+        y: 282
+      positionAbsolute:
+        x: 680
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: 239.1241725807513
+      y: 44.40992461253046
+      zoom: 0.9001256084678994

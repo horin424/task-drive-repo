@@ -1,0 +1,21 @@
+## amplify/backend/api/transcriptminute/resolvers/Mutation.createUserCustom.req.vtl
+
+#set($attributeValues = {})
+$util.qr($attributeValues.put("cognitoSub", { "S": "$context.identity.sub" }))
+$util.qr($attributeValues.put("username", { "S": "$ctx.args.input.username" }))
+$util.qr($attributeValues.put("email", { "S": "$ctx.args.input.email" }))
+$util.qr($attributeValues.put("createdAt", { "S": "$util.time.nowISO8601()" }))
+$util.qr($attributeValues.put("updatedAt", { "S": "$util.time.nowISO8601()" }))
+
+#if( $util.isNullOrBlank($ctx.args.input.organizationID) == false )
+  $util.qr($attributeValues.put("organizationID", { "S": "$ctx.args.input.organizationID" }))
+#end
+
+{
+  "version": "2018-05-29",
+  "operation": "PutItem",
+  "key": {
+    "id": { "S": "$util.autoId()" }
+  },
+  "attributeValues": $util.toJson($attributeValues)
+}

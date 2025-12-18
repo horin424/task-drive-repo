@@ -1,0 +1,749 @@
+{
+  "api": {
+    "generateapi": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "generationProcessor"
+        },
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "transcriptminute472b0aaa"
+        },
+        {
+          "attributes": [
+            "AdminGroupRole"
+          ],
+          "category": "auth",
+          "resourceName": "userPoolGroups"
+        },
+        {
+          "attributes": [
+            "UsersGroupRole"
+          ],
+          "category": "auth",
+          "resourceName": "userPoolGroups"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "transcriptminute": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "transcriptminute472b0aaa"
+        }
+      ],
+      "output": {
+        "authConfig": {
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "AWS_IAM"
+            }
+          ],
+          "defaultAuthentication": {
+            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+            "userPoolConfig": {
+              "userPoolId": "authtranscriptminute472b0aaa"
+            }
+          }
+        }
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "AppSync"
+    }
+  },
+  "auth": {
+    "transcriptminute472b0aaa": {
+      "customAuth": false,
+      "dependsOn": [
+        {
+          "attributes": [
+            "Arn",
+            "Name"
+          ],
+          "category": "function",
+          "resourceName": "transcriptminute472b0aaaPostConfirmation",
+          "triggerProvider": "Cognito"
+        }
+      ],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito"
+    },
+    "userPoolGroups": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId",
+            "AppClientIDWeb",
+            "AppClientID",
+            "IdentityPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "transcriptminute472b0aaa"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito-UserPool-Groups"
+    }
+  },
+  "custom": {
+    "outputBucket": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn",
+            "Region",
+            "LambdaExecutionRole",
+            "LambdaExecutionRoleArn"
+          ],
+          "category": "function",
+          "resourceName": "transcriptionProcessor"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "customCDK"
+    }
+  },
+  "dev": {
+    "api": {
+      "plugins": {
+        "functionMap": {
+          "AdminGroupRole": "AdminGroupRole"
+        }
+      }
+    },
+    "auth": {
+      "plugins": {
+        "functionMap": {
+          "AdminGroupRole": "AdminGroupRole"
+        }
+      }
+    },
+    "storage": {
+      "plugins": {
+        "functionMap": {
+          "AdminGroupRole": "AdminGroupRole"
+        }
+      }
+    }
+  },
+  "function": {
+    "cleanupExpiredFiles": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "BucketName"
+          ],
+          "category": "storage",
+          "resourceName": "s31d11b5d9"
+        },
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput"
+          ],
+          "category": "api",
+          "resourceName": "transcriptminute"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "decreaseOrgTaskGenerations": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput"
+          ],
+          "category": "api",
+          "resourceName": "transcriptminute"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "deleteGeneratedFiles": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "transcriptminute"
+        },
+        {
+          "attributes": [
+            "BucketName"
+          ],
+          "category": "storage",
+          "resourceName": "s31d11b5d9"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "generationProcessor": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "transcriptminute"
+        },
+        {
+          "attributes": [
+            "BucketName"
+          ],
+          "category": "storage",
+          "resourceName": "s31d11b5d9"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "generationWorker": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "transcriptminute"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "getAudioPresignedUrl": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "transcriptminute"
+        },
+        {
+          "attributes": [
+            "BucketName"
+          ],
+          "category": "storage",
+          "resourceName": "s31d11b5d9"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "monthlyReset": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput"
+          ],
+          "category": "api",
+          "resourceName": "transcriptminute"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "transcriptionProcessor": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "transcriptminute"
+        },
+        {
+          "attributes": [
+            "BucketName"
+          ],
+          "category": "storage",
+          "resourceName": "s31d11b5d9"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "transcriptminute472b0aaaPostConfirmation": {
+      "build": true,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "updateOrgMinutes": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput"
+          ],
+          "category": "api",
+          "resourceName": "transcriptminute"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "hosting": {
+    "amplifyhosting": {
+      "providerPlugin": "awscloudformation",
+      "service": "amplifyhosting",
+      "type": "manual"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_cleanupExpiredFiles_cleanupThresholdHours": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "cleanupExpiredFiles"
+        }
+      ]
+    },
+    "AMPLIFY_function_cleanupExpiredFiles_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "cleanupExpiredFiles"
+        }
+      ]
+    },
+    "AMPLIFY_function_cleanupExpiredFiles_logLevel": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "cleanupExpiredFiles"
+        }
+      ]
+    },
+    "AMPLIFY_function_cleanupExpiredFiles_maxSessionsPerRun": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "cleanupExpiredFiles"
+        }
+      ]
+    },
+    "AMPLIFY_function_cleanupExpiredFiles_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "cleanupExpiredFiles"
+        }
+      ]
+    },
+    "AMPLIFY_function_cleanupExpiredFiles_storageInputBucketname": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "cleanupExpiredFiles"
+        }
+      ]
+    },
+    "AMPLIFY_function_cleanupExpiredFiles_storageOutputbucketBucketname": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "cleanupExpiredFiles"
+        }
+      ]
+    },
+    "AMPLIFY_function_decreaseOrgTaskGenerations_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "decreaseOrgTaskGenerations"
+        }
+      ]
+    },
+    "AMPLIFY_function_decreaseOrgTaskGenerations_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "decreaseOrgTaskGenerations"
+        }
+      ]
+    },
+    "AMPLIFY_function_deleteGeneratedFiles_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "deleteGeneratedFiles"
+        }
+      ]
+    },
+    "AMPLIFY_function_deleteGeneratedFiles_logLevel": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "deleteGeneratedFiles"
+        }
+      ]
+    },
+    "AMPLIFY_function_deleteGeneratedFiles_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "deleteGeneratedFiles"
+        }
+      ]
+    },
+    "AMPLIFY_function_deleteGeneratedFiles_storageInputBucketname": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "deleteGeneratedFiles"
+        }
+      ]
+    },
+    "AMPLIFY_function_deleteGeneratedFiles_storageOutputbucketBucketname": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "deleteGeneratedFiles"
+        }
+      ]
+    },
+    "AMPLIFY_function_generationProcessor_appsyncApiUrl": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "generationProcessor"
+        }
+      ]
+    },
+    "AMPLIFY_function_generationProcessor_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "generationProcessor"
+        }
+      ]
+    },
+    "AMPLIFY_function_generationProcessor_difyApiUrl": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "generationProcessor"
+        }
+      ]
+    },
+    "AMPLIFY_function_generationProcessor_functionGenerationworkerName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "generationProcessor"
+        }
+      ]
+    },
+    "AMPLIFY_function_generationProcessor_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "generationProcessor"
+        }
+      ]
+    },
+    "AMPLIFY_function_generationProcessor_s3OutputBucket": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "generationProcessor"
+        }
+      ]
+    },
+    "AMPLIFY_function_generationProcessor_secretsManagerSecretArn": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "generationProcessor"
+        }
+      ]
+    },
+    "AMPLIFY_function_generationWorker_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "generationWorker"
+        }
+      ]
+    },
+    "AMPLIFY_function_generationWorker_difyApiUrl": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "generationWorker"
+        }
+      ]
+    },
+    "AMPLIFY_function_generationWorker_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "generationWorker"
+        }
+      ]
+    },
+    "AMPLIFY_function_generationWorker_secretsManagerSecretArn": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "generationWorker"
+        }
+      ]
+    },
+    "AMPLIFY_function_generationWorker_storageOutputbucketBucketname": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "generationWorker"
+        }
+      ]
+    },
+    "AMPLIFY_function_getAudioPresignedUrl_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getAudioPresignedUrl"
+        }
+      ]
+    },
+    "AMPLIFY_function_getAudioPresignedUrl_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getAudioPresignedUrl"
+        }
+      ]
+    },
+    "AMPLIFY_function_monthlyReset_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "monthlyReset"
+        }
+      ]
+    },
+    "AMPLIFY_function_monthlyReset_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "monthlyReset"
+        }
+      ]
+    },
+    "AMPLIFY_function_transcriptionProcessor_apiProvider": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "transcriptionProcessor"
+        }
+      ]
+    },
+    "AMPLIFY_function_transcriptionProcessor_apiSecretArn": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "transcriptionProcessor"
+        }
+      ]
+    },
+    "AMPLIFY_function_transcriptionProcessor_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "transcriptionProcessor"
+        }
+      ]
+    },
+    "AMPLIFY_function_transcriptionProcessor_difyApiUrl": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "transcriptionProcessor"
+        }
+      ]
+    },
+    "AMPLIFY_function_transcriptionProcessor_logLevel": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "transcriptionProcessor"
+        }
+      ]
+    },
+    "AMPLIFY_function_transcriptionProcessor_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "transcriptionProcessor"
+        }
+      ]
+    },
+    "AMPLIFY_function_transcriptionProcessor_s3OutputBucket": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "transcriptionProcessor"
+        }
+      ]
+    },
+    "AMPLIFY_function_transcriptionProcessor_secretsManagerSecretArn": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "transcriptionProcessor"
+        }
+      ]
+    },
+    "AMPLIFY_function_transcriptionProcessor_transcriptionApiProvider": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "transcriptionProcessor"
+        }
+      ]
+    },
+    "AMPLIFY_function_transcriptionProcessor_useCloudStorageUrl": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "transcriptionProcessor"
+        }
+      ]
+    },
+    "AMPLIFY_function_transcriptminute472b0aaaPostConfirmation_GROUP": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "transcriptminute472b0aaaPostConfirmation"
+        }
+      ]
+    },
+    "AMPLIFY_function_transcriptminute472b0aaaPostConfirmation_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "transcriptminute472b0aaaPostConfirmation"
+        }
+      ]
+    },
+    "AMPLIFY_function_transcriptminute472b0aaaPostConfirmation_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "transcriptminute472b0aaaPostConfirmation"
+        }
+      ]
+    },
+    "AMPLIFY_function_updateOrgMinutes_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "updateOrgMinutes"
+        }
+      ]
+    },
+    "AMPLIFY_function_updateOrgMinutes_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "updateOrgMinutes"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_appId": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_type": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    }
+  },
+  "storage": {
+    "s31d11b5d9": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "transcriptminute472b0aaa"
+        },
+        {
+          "attributes": [
+            "UsersGroupRole"
+          ],
+          "category": "auth",
+          "resourceName": "userPoolGroups"
+        },
+        {
+          "attributes": [
+            "AdminGroupRole"
+          ],
+          "category": "auth",
+          "resourceName": "userPoolGroups"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "S3"
+    }
+  }
+}

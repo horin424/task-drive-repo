@@ -1,0 +1,15 @@
+[
+  {
+    "Action": [
+      "s3:ListBucket", 
+      "s3:GetObject", 
+      "s3:PutObject",
+      "s3:DeleteObject",
+      "s3:DeleteObjects"
+    ],
+    "Resource": [
+      "arn:aws:s3:::transcriptminute-output-*-${env}",
+      "arn:aws:s3:::transcriptminute-output-*-${env}/*"
+    ]
+  }
+]

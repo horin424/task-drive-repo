@@ -1,0 +1,87 @@
+# ============================================
+# Azure Environment Configuration
+# ============================================
+# Copy this file to .env.local for local development
+# or configure in Azure App Service Configuration for production
+
+# ============================================
+# Azure AD B2C / Entra External ID (Authentication)
+# ============================================
+# Replace AWS Cognito
+NEXT_PUBLIC_ENTRA_CLIENT_ID=your-entra-client-id-here
+NEXT_PUBLIC_ENTRA_TENANT_NAME=your-tenant-name
+# Example: If your login URL is https://yourapp.ciamlogin.com, use 'yourapp'
+
+# ============================================
+# Azure Blob Storage (File Storage)
+# ============================================
+# Replace AWS S3
+NEXT_PUBLIC_AZURE_STORAGE_ACCOUNT=yourstorageaccount
+NEXT_PUBLIC_AZURE_STORAGE_KEY=your-storage-account-key-here
+# Optional: Use SAS token instead of account key for better security
+NEXT_PUBLIC_AZURE_STORAGE_SAS_TOKEN=
+# Optional: Custom endpoint (usually not needed)
+NEXT_PUBLIC_AZURE_STORAGE_ENDPOINT=
+
+# ============================================
+# Azure Functions (Backend API)
+# ============================================
+# Replace AWS Lambda + API Gateway + AppSync
+NEXT_PUBLIC_AZURE_FUNCTION_URL=https://your-function-app.azurewebsites.net
+# Example: https://transcript-minute-functions.azurewebsites.net
+
+# ============================================
+# Azure SignalR Service (Real-time Updates)
+# ============================================
+# Replace AppSync Subscriptions - Optional
+NEXT_PUBLIC_AZURE_SIGNALR_ENDPOINT=https://your-signalr.service.signalr.net
+
+# ============================================
+# Azure API Management (Optional)
+# ============================================
+# For API gateway functionality
+NEXT_PUBLIC_AZURE_APIM_URL=
+NEXT_PUBLIC_AZURE_APIM_SUBSCRIPTION_KEY=
+
+# ============================================
+# Azure Configuration
+# ============================================
+NEXT_PUBLIC_AZURE_LOCATION=japaneast
+NEXT_PUBLIC_AZURE_RESOURCE_GROUP=transcript-minute-rg
+
+# ============================================
+# Application Settings
+# ============================================
+NEXT_PUBLIC_APP_ENV=development
+# Options: development, staging, production
+
+# ============================================
+# Maintenance Mode
+# ============================================
+NEXT_PUBLIC_MAINTENANCE_MODE=false
+NEXT_PUBLIC_MAINTENANCE_MESSAGE=ただいまシステムメンテナンス中です。ご不便をおかけして申し訳ありません。
+
+# ============================================
+# Backend-only Variables (Not exposed to client)
+# ============================================
+# These should be configured in Azure Function App Settings only
+
+# Azure Key Vault
+AZURE_KEY_VAULT_URL=https://your-keyvault.vault.azure.net/
+
+# Cosmos DB or Azure SQL
+AZURE_COSMOSDB_ENDPOINT=https://your-cosmosdb.documents.azure.com:443/
+AZURE_COSMOSDB_KEY=your-cosmosdb-key
+AZURE_COSMOSDB_DATABASE=transcriptminute
+
+# Or Azure SQL
+AZURE_SQL_CONNECTION_STRING=
+
+# API Keys (should be stored in Azure Key Vault in production)
+ELEVENLABS_API_KEY=your-elevenlabs-api-key
+DIFY_API_KEY=your-dify-api-key
+DIFY_API_URL=https://your-dify-instance.com/v1
+
+# Application Insights (Monitoring)
+APPLICATIONINSIGHTS_CONNECTION_STRING=
+

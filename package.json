@@ -1,0 +1,45 @@
+{
+  "name": "transcript-minute",
+  "version": "0.2.2",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@aws-amplify/ui-react": "^6.9.3",
+    "@aws-sdk/client-s3": "^3.802.0",
+    "@azure/functions": "^4.8.0",
+    "@azure/msal-browser": "^4.24.1",
+    "@azure/msal-react": "^3.0.20",
+    "@azure/storage-blob": "^12.28.0",
+    "@microsoft/signalr": "^9.0.6",
+    "@tanstack/react-query": "^5.82.0",
+    "@types/file-saver": "^2.0.7",
+    "@types/zen-observable": "^0.8.7",
+    "amazon-cognito-identity-js": "^6.3.12",
+    "aws-amplify": "^6.13.5",
+    "file-saver": "^2.0.5",
+    "jszip": "^3.10.1",
+    "next": "^15.5.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hot-toast": "^2.5.2",
+    "react-markdown": "^10.1.0",
+    "zen-observable-ts": "^1.1.0",
+    "zustand": "^5.0.6"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.2.2",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5"
+  }
+}

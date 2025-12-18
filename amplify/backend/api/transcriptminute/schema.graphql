@@ -1,0 +1,133 @@
+type Organization
+  @model
+  @auth(rules: [
+    { allow: private },
+    { allow: groups, groups: ["Admin"] }
+  ])
+{
+  id: ID! @primaryKey
+  name: String!
+  remainingMinutes: Int!
+  remainingTaskGenerations: Int            # 残りタスク生成回数（nullable に変更）
+  monthlyMinutes: Int                      # 月間リセット用の使用時間値
+  monthlyTaskGenerations: Int              # 月間リセット用のタスク生成回数値
+  users: [User] @hasMany(indexName: "byOrganization", fields: ["id"])
+}
+
+type User
+  @model
+  @auth(rules: [
+    { allow: private },
+    { allow: groups, groups: ["Admin"] }
+  ])
+{
+  id: ID! @primaryKey
+  organizationID: ID @index(name: "byOrganization")
+  username: String!
+  email: String
+  cognitoSub: String @index(name: "byCognitoSub", queryField: "userByCognitoSub")
+  organization: Organization @belongsTo(fields: ["organizationID"])
+  isAdmin: Boolean
+}
+
+# 一時的な処理用のタイプを追加
+type ProcessingSession
+  @model
+  @auth(rules: [
+    { allow: owner, ownerField: "owner", identityClaim: "sub" },
+    { allow: private, provider: iam, operations: [read, update] },
+    { allow: groups, groups: ["Admin"] }
+  ])
+{
+  id: ID! @primaryKey
+  owner: String
+  identityId: String! @index(name: "byIdentityId", queryField: "processingSessionsByIdentityId")
+  sessionId: String! @index(name: "bySessionId", queryField: "processingSessionsBySessionId")
+  organizationID: ID! @index(name: "byOrganization")
+  fileName: String!
+  language: String!
+  status: ProcessingStatus!
+  uploadTime: AWSDateTime!
+  transcriptKey: String
+  bulletPointsKey: String
+  minutesKey: String
+  bulletPointsStatus: String
+  minutesStatus: String
+  taskFileKey: String
+  informationFileKey: String
+  tasksKey: String
+  tasksStatus: String
+  processingTypes: [String]
+  audioLengthSeconds: Int
+  errorMessage: String
+  transcriptFormat: TranscriptFormat
+  filesDeletionTime: AWSDateTime  # ファイル削除日時（null = 未削除）
+}
+
+enum ProcessingStatus {
+  UPLOADED
+  PROCESSING_TRANSCRIPTION
+  TRANSCRIPTION_FAILED
+  PENDING_SPEAKER_EDIT
+  SPEAKER_EDIT_COMPLETED
+  PROCESSING_BULLETS
+  BULLETS_COMPLETED
+  BULLETS_FAILED
+  PROCESSING_MINUTES
+  MINUTES_COMPLETED
+  MINUTES_FAILED
+  PROCESSING_TASKS
+  TASKS_COMPLETED
+  TASKS_FAILED
+  ALL_COMPLETED
+  ERROR
+}
+
+enum TranscriptFormat {
+  JSON
+  TEXT
+}
+
+input CreateProcessingSessionInput {
+  owner: String
+  identityId: String!
+  sessionId: String!
+  organizationID: ID!
+  fileName: String!
+  language: String!
+  status: ProcessingStatus!
+  uploadTime: AWSDateTime!
+  processingTypes: [String]
+}
+
+type Mutation {
+  createUserCustom(input: CreateUserCustomInput!): User 
+  @auth(rules: [
+    { allow: private },
+    { allow: groups, groups: ["Admin"] }
+  ])
+  deleteGeneratedFiles(sessionId: String!): Boolean @function(name: "deleteGeneratedFiles-${env}")
+  decreaseOrganizationRemainingMinutes(input: DecreaseOrganizationRemainingMinutesInput!): Organization @function(name: "updateOrgMinutes-${env}") @auth(rules: [{ allow: private, provider: iam }])
+  decreaseOrganizationTaskGenerations(input: DecreaseOrganizationTaskGenerationsInput!): Organization @function(name: "decreaseOrgTaskGenerations-${env}") @auth(rules: [{ allow: private, provider: iam }])
+}
+
+type Query {
+  getAudioPresignedUrl(sessionId: ID!): String @function(name: "getAudioPresignedUrl-${env}")
+}
+
+input CreateUserCustomInput {
+  username: String!
+  email: String
+  organizationID: ID
+  isAdmin: Boolean
+}
+
+input DecreaseOrganizationRemainingMinutesInput {
+  id: ID!
+  decreaseBy: Int!
+}
+
+input DecreaseOrganizationTaskGenerationsInput {
+  id: ID!
+  decreaseBy: Int!
+}

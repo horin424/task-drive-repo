@@ -1,0 +1,11 @@
+{
+  "CloudWatchRule": "NONE",
+  "storages31d11b5d9BucketName": "transcriptminutee59b87753a5a45619813e746bd1335d4d612-output-dev",
+  "apitranscriptminuteGraphQLAPIIdOutput": "4otnfz2lerg6pguhtptisnkum4",
+  "apitranscriptminuteGraphQLAPIEndpointOutput": "https://3llbhqqw4vb3dcpgajkhuma6jy.appsync-api.us-east-1.amazonaws.com/graphql",
+  "appsyncApiUrl": "https://3llbhqqw4vb3dcpgajkhuma6jy.appsync-api.us-east-1.amazonaws.com/graphql",
+  "secretsManagerSecretArn": "arn:aws:secretsmanager:us-east-1:006985033268:secret:transcription-api-keys-dev-DIH7Cu",
+  "difyApiUrl": "https://dev.gpt-incbot.com/v1",
+  "s3OutputBucket": "transcriptminutee59b87753a5a45619813e746bd1335d4d612-output-dev",
+  "pGenerationWorkerName": ""
+}

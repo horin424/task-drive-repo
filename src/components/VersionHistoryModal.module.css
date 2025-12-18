@@ -1,0 +1,147 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: var(--background-main, #ffffff);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  background-color: var(--background-accent, #f9fafb);
+}
+
+.modalHeader h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--text-primary, #111827);
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-secondary, #6b7280);
+  padding: 0.25rem 0.5rem;
+}
+
+.closeButton:hover {
+  color: var(--text-primary, #111827);
+}
+
+.changelogContent {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+  color: var(--text-primary, #111827);
+  background-color: var(--background-main, #ffffff);
+}
+
+.changelogContent h1 {
+  font-size: 1.8rem;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary, #111827);
+}
+
+.changelogContent h2 {
+  font-size: 1.4rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  color: var(--text-primary, #111827);
+}
+
+.changelogContent ul {
+  padding-left: 1.5rem;
+  color: var(--text-primary, #111827);
+}
+
+.changelogContent li {
+  margin-bottom: 0.5rem;
+  color: var(--text-primary, #111827);
+}
+
+@media (max-width: 640px) {
+  .modalContent {
+    width: 95%;
+    max-height: 80vh;
+  }
+  
+  .modalHeader h2 {
+    font-size: 1.25rem;
+  }
+  
+  .changelogContent {
+    padding: 1rem;
+  }
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+  .modalContent {
+    background-color: #1f2937;
+  }
+  
+  .modalHeader {
+    background-color: #111827;
+    border-bottom-color: #374151;
+  }
+  
+  .modalHeader h2 {
+    color: #f9fafb;
+  }
+  
+  .closeButton {
+    color: #9ca3af;
+  }
+  
+  .closeButton:hover {
+    color: #f9fafb;
+  }
+  
+  .changelogContent {
+    background-color: #1f2937;
+    color: #e5e7eb;
+  }
+  
+  .changelogContent h1 {
+    color: #f9fafb;
+  }
+  
+  .changelogContent h2 {
+    color: #f9fafb;
+    border-bottom-color: #374151;
+  }
+  
+  .changelogContent ul {
+    color: #e5e7eb;
+  }
+  
+  .changelogContent li {
+    color: #e5e7eb;
+  }
+} 

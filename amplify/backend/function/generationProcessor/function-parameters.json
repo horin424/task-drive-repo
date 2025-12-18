@@ -1,0 +1,44 @@
+{
+  "lambdaLayers": [],
+  "permissions": {
+    "api": {
+      "transcriptminute": [
+        "Query",
+        "Mutation"
+      ]
+    },
+    "storage": {
+      "s31d11b5d9": [
+        "create",
+        "read",
+        "update"
+      ],
+      "ProcessingSession:@model(appsync)": [
+        "read",
+        "update"
+      ]
+    }
+  },
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "difyApiUrl",
+      "environmentVariableName": "DIFY_API_URL"
+    },
+    {
+      "cloudFormationParameterName": "functionGenerationworkerName",
+      "environmentVariableName": "FUNCTION_GENERATIONWORKER_NAME"
+    },
+    {
+      "cloudFormationParameterName": "secretsManagerSecretArn",
+      "environmentVariableName": "SECRETS_MANAGER_SECRET_ARN"
+    },
+    {
+      "cloudFormationParameterName": "appsyncApiUrl",
+      "environmentVariableName": "APPSYNC_API_URL"
+    },
+    {
+      "cloudFormationParameterName": "s3OutputBucket",
+      "environmentVariableName": "S3_OUTPUT_BUCKET"
+    }
+  ]
+}

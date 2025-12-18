@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+:root {
+  /* ライトモードの変数 */
+  --background-main: white;
+  --background-accent: #f9fafb;
+  --background-secondary: #e5e7eb;
+  --background-secondary-hover: #d1d5db;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --button-secondary-bg: #3b82f6;
+  --button-secondary-hover: #2563eb;
+  --button-secondary-text: white;
+  --border-color: #e5e7eb;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* ダークモードの変数 */
+    --background-main: #1f2937;
+    --background-accent: #111827;
+    --background-secondary: #374151;
+    --background-secondary-hover: #4b5563;
+    --text-primary: #f9fafb;
+    --text-secondary: #d1d5db;
+    --button-secondary-bg: #2563eb;
+    --button-secondary-hover: #3b82f6;
+    --button-secondary-text: white;
+    --border-color: #374151;
+  }
+}
+
+body {
+  background-color: var(--background-main);
+  color: var(--text-primary);
+}
+
+/* 更新履歴モーダル内のコンテンツスタイル */
+.changelogContent h1,
+.changelogContent h2,
+.changelogContent p,
+.changelogContent ul,
+.changelogContent li {
+  color: var(--text-primary) !important;
+}
+
+.changelogContent a {
+  color: var(--button-secondary-bg) !important;
+}
+
+.changelogContent hr {
+  border-color: var(--border-color) !important;
+}
+
+#__next, main {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.amplify-authenticator {
+  width: 100%;
+  max-width: 100%;
+}

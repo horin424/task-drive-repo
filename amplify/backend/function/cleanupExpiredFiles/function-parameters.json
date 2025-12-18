@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "storage": {
+      "s31d11b5d9": [
+        "delete"
+      ],
+      "Organization:@model(appsync)": [
+        "read"
+      ],
+      "ProcessingSession:@model(appsync)": [
+        "read",
+        "update"
+      ]
+    }
+  },
+  "lambdaLayers": [],
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "maxSessionsPerRun",
+      "environmentVariableName": "MAX_SESSIONS_PER_RUN"
+    },
+    {
+      "cloudFormationParameterName": "cleanupThresholdHours",
+      "environmentVariableName": "CLEANUP_THRESHOLD_HOURS"
+    },
+    {
+      "cloudFormationParameterName": "storageOutputbucketBucketname",
+      "environmentVariableName": "STORAGE_OUTPUTBUCKET_BUCKETNAME"
+    },
+    {
+      "cloudFormationParameterName": "storageInputBucketname",
+      "environmentVariableName": "STORAGE_INPUT_BUCKETNAME"
+    },
+    {
+      "cloudFormationParameterName": "logLevel",
+      "environmentVariableName": "LOG_LEVEL"
+    }
+  ]
+}
