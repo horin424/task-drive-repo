@@ -1,11 +1,13 @@
 # Azure Implementation - Quick Start Guide
 
-## 🎯 What Has Been Completed
+## What Has Been Completed
 
-✅ **Complete frontend implementation** for Azure authentication and file upload
-✅ **All AWS-equivalent functionality** now available for Azure
-✅ **Zero changes to AWS implementation** - both systems work in parallel
-✅ **Production-ready code** with TypeScript, error handling, and documentation
+- Complete frontend implementation (Entra auth + file upload)
+- Complete backend implementation (Functions + Cosmos + Web PubSub)
+- Azure OpenAI Whisper transcription pipeline
+- Dify workflow integration for minutes/bullets/tasks
+- Usage limits + monthly reset + cleanup jobs
+- Production-ready documentation and runbooks
 
 ## 📦 New Files Created
 
@@ -201,52 +203,63 @@ const user = await getUserByIdAzure(azureAdObjectId);
 const org = await getOrganizationByIdAzure('org-123');
 ```
 
-## 🏗️ Backend Development Required
+## Backend Implementation Ready
 
-**Note:** The frontend is complete, but you need Azure Functions backend for full functionality.
+Note: The Azure Functions backend is implemented in /api and ready to run.
 
-### What Backend Functions Are Needed:
+### What Is Implemented:
 
-1. **Sessions API** (`/api/sessions`)
+1. Sessions API (/api/sessions)
    - POST: Create session
-   - PUT: Update session
+   - PUT/PATCH: Update session
    - GET: Get session by ID
    - DELETE: Delete session files
+   - GET: Audio/output SAS URLs
 
-2. **Users API** (`/api/users`)
+2. Users API (/api/users)
    - POST: Create user
    - GET: Get user by Azure AD Object ID
+   - PUT/PATCH: Update user
 
-3. **Organizations API** (`/api/organizations`)
-   - GET: Get organization by ID
-   - POST: Decrease minutes (atomic)
-   - POST: Decrease task generations (atomic)
+3. Organizations API (/api/organizations)
+   - GET: Get org by ID / list all (admin)
+   - POST: Decrease minutes
+   - POST: Decrease task generations
 
-4. **Blob Trigger Function**
-   - Triggered when file uploaded to `transcripts` container
-   - Calls ElevenLabs/Dify API for transcription
+4. Transcription Pipeline
+   - Blob trigger on transcripts
+   - Azure OpenAI Whisper transcription
+   - Saves transcript to outputs
    - Updates session status
 
-5. **Scheduled Functions**
+5. Content Generation
+   - POST /api/generate/process-all
+   - Uses Dify Workflow when ENABLE_DIFY_GENERATION=true
+   - Falls back to direct Azure OpenAI prompts
+
+6. Scheduled Functions
    - Monthly quota reset
    - Expired files cleanup
 
-### Quick Backend Setup (Node.js/TypeScript)
+### How to Run Locally (Backend)
 
-```bash
-# Create Azure Functions project
-npm install -g azure-functions-core-tools@4
-func init azure-functions --typescript
-cd azure-functions
-
-# Create a session management function
-func new --template "HTTP trigger" --name sessions
-
-# Deploy
-func azure functionapp publish your-function-app-name
+```
+cd api
+npm install
+npm run build
+func start
 ```
 
-Refer to `docs/azure/AZURE_IMPLEMENTATION_GUIDE.md` for detailed backend implementation.
+### Required Backend Env (Dify)
+
+Add to api/local.settings.json:
+```
+ENABLE_DIFY_GENERATION=true
+DIFY_API_KEY=app-xxxxxxxx
+DIFY_WORKFLOW_URL=http://localhost:5001/v1
+```
+
+See docs/azure/DIFY_INTEGRATION_GUIDE.md for workflow setup and Key Vault steps.
 
 ## 🔄 Switching Between AWS and Azure
 
@@ -277,21 +290,19 @@ Keep both:
 
 Users can test both!
 
-## 📊 Feature Comparison
+## Feature Comparison
 
 | Feature | AWS | Azure | Status |
 |---------|-----|-------|--------|
-| Authentication | Cognito | Entra ID | ✅ Both working |
-| File Storage | S3 | Blob Storage | ✅ Both working |
-| Upload Progress | ✅ | ✅ | ✅ Both working |
-| Session Management | AppSync | Functions API | ⚠️ Azure needs backend |
-| Real-time Updates | Subscriptions | Polling/SignalR | ⚠️ Polling works, SignalR recommended |
-| User Management | DynamoDB | Functions + DB | ⚠️ Azure needs backend |
-| File Processing | Lambda | Functions | ⚠️ Azure needs backend |
+| Authentication | Cognito | Entra ID | DONE |
+| File Storage | S3 | Blob Storage | DONE |
+| Upload Progress | OK | OK | DONE |
+| Session Management | AppSync | Functions API | DONE |
+| Real-time Updates | Subscriptions | Polling/Web PubSub | DONE |
+| User Management | DynamoDB | Functions + Cosmos DB | DONE |
+| File Processing | Lambda | Functions | DONE |
 
-**Legend:**
-- ✅ Fully implemented and working
-- ⚠️ Frontend ready, backend needed
+Legend: DONE = implemented and working
 
 ## 🐛 Troubleshooting
 
@@ -317,49 +328,54 @@ Users can test both!
 - **Environment Variables:** `docs/azure/env-azure-example.txt`
 - **This Quick Start:** `docs/azure/QUICK_START.md`
 
-## 💡 Quick Tips
+## Quick Tips
 
-1. **Testing without backend?** 
-   - You can test authentication and file upload
-   - Session status updates won't work until backend is deployed
+1. Testing locally
+   - Run Functions (func start) and frontend (npm run dev)
+   - Full E2E flow is available
 
-2. **Want real-time updates now?**
-   - Current implementation uses polling (works immediately)
-   - For production, migrate to Azure SignalR (better performance)
+2. Real-time updates
+   - Web PubSub already supported
+   - Polling fallback still works
 
-3. **Security concerns?**
-   - For development: Account keys are OK
-   - For production: Use SAS tokens generated server-side
+3. Security
+   - Dev: local settings OK
+   - Prod: use Key Vault + Managed Identity
 
-4. **Performance issues?**
-   - Enable Azure CDN for blob access
-   - Use SignalR instead of polling
-   - Implement chunked uploads for large files
+4. Performance
+   - Enable CDN for blob access
+   - Use Web PubSub instead of polling for scale
+   - Consider chunked uploads for very large files
 
-## ✅ Checklist
+## Checklist
 
-Before testing Azure implementation:
+Before testing locally:
 - [ ] Azure AD app registered with correct redirect URIs
-- [ ] Storage account created with `transcripts` and `outputs` containers
-- [ ] CORS enabled on storage account
-- [ ] `.env.local` configured with all required values
-- [ ] `npm install` completed successfully
-- [ ] `npm run dev` running without errors
+- [ ] Storage account created with transcripts and outputs containers
+- [ ] CORS enabled on storage account (dev only; restrict in prod)
+- [ ] .env.local configured with all required values
+- [ ] api/local.settings.json configured with backend values
+- [ ] npm install completed successfully
+- [ ] npm run dev running without errors
+- [ ] func start running without errors
 
-Optional (for full functionality):
+Required for production:
 - [ ] Azure Functions deployed
-- [ ] Database (Cosmos DB/SQL) created
-- [ ] Key Vault configured with secrets
-- [ ] SignalR Service created (optional)
+- [ ] Cosmos DB created and containers provisioned
+- [ ] Key Vault configured with secrets + Managed Identity
+- [ ] Web PubSub configured
+- [ ] Dify workflow deployed and API key stored
 
-## 🎉 Success Indicators
+## Success Indicators
 
-You know it's working when:
-1. ✅ Login popup appears and authenticates successfully
-2. ✅ User info displays after login
-3. ✅ File upload shows progress percentage
-4. ✅ File appears in Azure Blob Storage
-5. ✅ Session status updates (when backend is deployed)
+You know it is working when:
+1. Login popup appears and authenticates successfully
+2. User info displays after login
+3. File upload shows progress percentage
+4. File appears in Azure Blob Storage
+5. Transcription completes and speaker edit appears
+6. Content generation completes (minutes/bullets/tasks)
+7. Download produces the expected output files
 
 ## 📞 Need Help?
 

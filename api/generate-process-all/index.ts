@@ -17,11 +17,19 @@ import { ProcessingStatus, Organization } from "../shared/models";
 import { sendSessionUpdate } from "../shared/webPubSubClient";
 import { OpenAIClient, AzureKeyCredential } from "@azure/openai";
 import { getCorrelationId } from "../shared/correlation";
+import axios from "axios";
+import { getAzureOpenAICredentials, getDifyCredentials } from "../shared/keyVaultClient";
 
 // --- Configuration ---
-const openAiEndpoint = process.env.AZURE_OPENAI_ENDPOINT || "";
-const openAiKey = process.env.AZURE_OPENAI_API_KEY || "";
 const openAiDeployment = process.env.AZURE_OPENAI_DEPLOYMENT || "gpt-4o-mini"; // Ensure this matches your Foundry deployment name
+const outputContainerName = process.env.AZURE_STORAGE_OUTPUT_CONTAINER || "outputs";
+
+const enableDifyGeneration = (process.env.ENABLE_DIFY_GENERATION || "").toLowerCase() === "true";
+const difyResponseMode = process.env.DIFY_RESPONSE_MODE || "blocking";
+const difyInputTranscriptKey = process.env.DIFY_INPUT_TRANSCRIPT_KEY || "transcript";
+const difyInputProcessingTypeKey = process.env.DIFY_INPUT_PROCESSING_TYPE_KEY || "processingType";
+const difyInputTaskFileKey = process.env.DIFY_INPUT_TASK_FILE_KEY || "taskFileKey";
+const difyInputInformationFileKey = process.env.DIFY_INPUT_INFORMATION_FILE_KEY || "informationFileKey";
 
 type GenerateRequest = {
   transcript: string;
@@ -40,17 +48,18 @@ const CONTENT_TYPES: Record<string, string> = {
 // --- Direct Azure OpenAI Client ---
 let openAiClient: OpenAIClient | null = null;
 
-const getOpenAiClient = (): OpenAIClient => {
+const getOpenAiClient = async (context: InvocationContext): Promise<OpenAIClient> => {
   if (openAiClient) return openAiClient;
-  if (!openAiEndpoint || !openAiKey) {
+
+  const { endpoint, key } = await getAzureOpenAICredentials();
+  if (!endpoint || !key) {
     throw new Error(
-      "Azure OpenAI endpoint/key not configured in local.settings.json."
+      "Azure OpenAI endpoint/key not configured. Set AZURE_OPENAI_ENDPOINT and AZURE_OPENAI_API_KEY (or Key Vault secrets)."
     );
   }
-  openAiClient = new OpenAIClient(
-    openAiEndpoint,
-    new AzureKeyCredential(openAiKey)
-  );
+
+  openAiClient = new OpenAIClient(endpoint, new AzureKeyCredential(key));
+  context.log("Azure OpenAI client initialized");
   return openAiClient;
 };
 
@@ -102,7 +111,7 @@ const generateContent = async (
   transcript: string,
   context: InvocationContext
 ): Promise<string> => {
-  const client = getOpenAiClient();
+  const client = await getOpenAiClient(context);
   const prompt = buildPrompt(type, transcript);
 
   context.log(`[OpenAI] Generating ${type} using ${openAiDeployment}...`);
@@ -143,6 +152,114 @@ const generateContent = async (
   }
 };
 
+type DifyWorkflowRunResponse = {
+  data?: {
+    outputs?: Record<string, unknown>;
+    error?: string;
+    status?: string;
+  };
+  outputs?: Record<string, unknown>;
+  message?: string;
+  code?: string;
+};
+
+const getDifyRunUrl = (workflowUrl: string): string => {
+  const base = (workflowUrl || "").trim().replace(/\/+$/, "");
+  if (!base) {
+    throw new Error("Dify workflow URL is not configured (DIFY_WORKFLOW_URL).");
+  }
+  if (base.endsWith("/workflows/run")) return base;
+  return `${base}/workflows/run`;
+};
+
+const extractDifyTextOutput = (outputs: unknown): string | null => {
+  if (!outputs) return null;
+  if (typeof outputs === "string") return outputs.trim();
+  if (typeof outputs !== "object") return null;
+
+  const record = outputs as Record<string, unknown>;
+  const preferredKeys = ["text", "result", "output", "answer", "content"];
+  for (const key of preferredKeys) {
+    const value = record[key];
+    if (typeof value === "string" && value.trim()) return value.trim();
+  }
+
+  const stringValues = Object.values(record).filter(
+    (v): v is string => typeof v === "string" && v.trim().length > 0
+  );
+  if (stringValues.length === 1) return stringValues[0].trim();
+  return null;
+};
+
+const generateContentWithDify = async (
+  type: string,
+  transcript: string,
+  context: InvocationContext,
+  userId: string,
+  taskFileKey?: string,
+  informationFileKey?: string
+): Promise<string> => {
+  if (difyResponseMode !== "blocking") {
+    throw new Error(
+      `Unsupported Dify response mode '${difyResponseMode}'. Use DIFY_RESPONSE_MODE=blocking.`
+    );
+  }
+
+  const { apiKey, workflowUrl } = await getDifyCredentials();
+  if (!apiKey || !workflowUrl) {
+    throw new Error(
+      "Dify API key/workflow URL not configured. Set DIFY_API_KEY and DIFY_WORKFLOW_URL (or Key Vault secrets)."
+    );
+  }
+
+  const url = getDifyRunUrl(workflowUrl);
+  const inputs: Record<string, unknown> = {
+    [difyInputTranscriptKey]: transcript,
+    [difyInputProcessingTypeKey]: type,
+  };
+  if (taskFileKey) inputs[difyInputTaskFileKey] = taskFileKey;
+  if (informationFileKey) inputs[difyInputInformationFileKey] = informationFileKey;
+
+  context.log(`[Dify] Generating ${type} via workflow...`);
+
+  const response = await axios.post<DifyWorkflowRunResponse>(
+    url,
+    {
+      inputs,
+      response_mode: "blocking",
+      user: userId,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      timeout: 5 * 60 * 1000,
+      validateStatus: () => true,
+    }
+  );
+
+  if (response.status < 200 || response.status >= 300) {
+    const details =
+      typeof response.data === "object" && response.data
+        ? JSON.stringify(response.data)
+        : String(response.data);
+    throw new Error(`Dify API error ${response.status}: ${details}`);
+  }
+
+  const text =
+    extractDifyTextOutput(response.data?.data?.outputs) ||
+    extractDifyTextOutput(response.data?.outputs);
+
+  if (!text) {
+    throw new Error(
+      "No usable text output returned from Dify workflow. Ensure your workflow outputs a text field (e.g., 'text' or 'result')."
+    );
+  }
+
+  return text;
+};
+
 const decrementTaskQuota = async (
   organizationID: string,
   correlationId: string
@@ -153,18 +270,48 @@ const decrementTaskQuota = async (
     organizationID
   );
   if (!org) throw new AuthorizationError("Organization not found", 404);
-  if ((org.remainingTaskGenerations ?? 0) <= 0)
+
+  const defaultMonthlyTasks = org.monthlyTaskGenerations ?? 100;
+  const hasRemaining = typeof org.remainingTaskGenerations === "number";
+  const remaining = hasRemaining
+    ? org.remainingTaskGenerations
+    : defaultMonthlyTasks;
+
+  if (!Number.isFinite(remaining) || remaining <= 0) {
     throw new AuthorizationError("Task quota exceeded", 403);
+  }
+
+  const operations: PatchOperation[] = [
+    { op: "set", path: "/updatedAt", value: new Date().toISOString() },
+  ];
+
+  if (!hasRemaining) {
+    if (org.monthlyTaskGenerations == null) {
+      operations.push({
+        op: "set",
+        path: "/monthlyTaskGenerations",
+        value: defaultMonthlyTasks,
+      });
+    }
+    operations.push({
+      op: "set",
+      path: "/remainingTaskGenerations",
+      value: remaining - 1,
+    });
+  } else {
+    operations.push({
+      op: "incr",
+      path: "/remainingTaskGenerations",
+      value: -1,
+    });
+  }
 
   const etag = (org as any)?._etag;
   await patchItem(
     CONTAINERS.ORGANIZATIONS,
     organizationID,
     organizationID,
-    [
-      { op: "incr", path: "/remainingTaskGenerations", value: -1 },
-      { op: "set", path: "/updatedAt", value: new Date().toISOString() },
-    ],
+    operations,
     etag ? { accessCondition: { type: "IfMatch", condition: etag } } : undefined
   );
 };
@@ -176,6 +323,8 @@ export async function generateProcessAll(
   const correlationId = getCorrelationId(request);
   context.log("generate-process-all invoked", correlationId);
 
+  let sessionIdForError: string | null = null;
+
   try {
     const auth = await authenticateRequest(request);
     const body = (await request.json()) as GenerateRequest;
@@ -185,6 +334,7 @@ export async function generateProcessAll(
     }
 
     const sessionId = ensureValidSessionId(body.sessionId);
+    sessionIdForError = sessionId;
     const session = await fetchSessionOrThrow(sessionId);
     await assertSessionAccess(session, auth);
 
@@ -222,7 +372,7 @@ export async function generateProcessAll(
     }
 
     const basePath = `private/${session.owner}/${session.sessionId}/`;
-    const outputContainer = getContainerClient("outputs");
+    const outputContainer = getContainerClient(outputContainerName);
     await outputContainer.createIfNotExists();
 
     const operations: PatchOperation[] = [
@@ -230,7 +380,16 @@ export async function generateProcessAll(
     ];
 
     for (const type of body.processingTypes) {
-      const content = await generateContent(type, body.transcript, context);
+      const content = enableDifyGeneration
+        ? await generateContentWithDify(
+            type,
+            body.transcript,
+            context,
+            auth.oid,
+            body.taskFileKey,
+            body.informationFileKey
+          )
+        : await generateContent(type, body.transcript, context);
 
       const blobName = `${basePath}${type}.txt`;
       const buffer = Buffer.from(content, "utf-8");
@@ -292,7 +451,25 @@ export async function generateProcessAll(
     return { status: 202, jsonBody: { message: "Completed", sessionId } };
   } catch (error: any) {
     context.error("generate-process-all error", error);
-    return { status: 500, jsonBody: { error: error.message } };
+
+    const status =
+      error instanceof AuthorizationError ? error.status : 500;
+    const message =
+      error instanceof Error ? error.message : "Internal server error";
+
+    if (sessionIdForError) {
+      const now = new Date().toISOString();
+      await patchItem(CONTAINERS.SESSIONS, sessionIdForError, sessionIdForError, [
+        { op: "set", path: "/status", value: ProcessingStatus.ERROR },
+        { op: "set", path: "/errorMessage", value: message },
+        { op: "set", path: "/updatedAt", value: now },
+      ]).catch(() => undefined);
+      await sendSessionUpdate(sessionIdForError, ProcessingStatus.ERROR, {
+        errorMessage: message,
+      }).catch(() => undefined);
+    }
+
+    return { status, jsonBody: { error: message, correlationId } };
   }
 }
 
