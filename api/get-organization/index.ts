@@ -4,9 +4,9 @@ import {
   HttpResponseInit,
   InvocationContext,
 } from "@azure/functions";
-import { getItem, CONTAINERS } from "../shared/cosmosClient"; // Use Cosmos Client
+import { getItem, queryItems, CONTAINERS } from "../shared/cosmosClient"; // Use Cosmos Client
 import { Organization } from "../shared/models";
-import { authenticateRequest, AuthorizationError } from "../shared/auth";
+import { authenticateRequest, AuthorizationError, userIsAdmin } from "../shared/auth";
 
 export async function getOrganization(
   request: HttpRequest,
@@ -19,8 +19,16 @@ export async function getOrganization(
       request.query.get("id") ||
       request.query.get("organizationId");
 
+    // If no orgId was provided, allow admins to list all organizations.
     if (!orgId) {
-      throw new AuthorizationError("Missing organization id", 400);
+      if (!userIsAdmin(auth)) {
+        throw new AuthorizationError("Missing organization id", 400);
+      }
+      const orgs = await queryItems<Organization>(
+        CONTAINERS.ORGANIZATIONS,
+        "SELECT * FROM c"
+      );
+      return { status: 200, jsonBody: orgs };
     }
 
     // Fetch from Cosmos DB instead of Blob Storage

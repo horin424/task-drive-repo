@@ -510,29 +510,22 @@ npx playwright test tests/azure/
 
 ## Next Steps
 
-1. ✅ **Frontend Implementation Complete**
-   - Authentication with MSAL
-   - File upload to Blob Storage
-   - API client for Azure Functions
-   - React hooks for media upload and auth
+1. Backend implementation complete
+   - Azure Functions + Cosmos DB + Web PubSub
+   - Azure OpenAI Whisper transcription
+   - Dify workflow integration for minutes/bullets/tasks
+   - Quotas + monthly reset + cleanup jobs
 
-2. ⏳ **Backend Implementation Required**
-   - Create Azure Functions project
-   - Implement database layer (Cosmos DB/SQL)
-   - Set up scheduled functions
-   - Integrate with Dify API
+2. Production hardening (Milestone 4)
+   - Key Vault + Managed Identity + RBAC
+   - Application Insights + Log Analytics + alerts
+   - DNS/SSL/custom domain
+   - Load and security testing
 
-3. ⏳ **Infrastructure Setup**
-   - Deploy Azure resources via Bicep/Terraform
-   - Configure networking and security
-   - Set up CI/CD pipeline
-   - Configure monitoring and alerts
-
-4. ⏳ **Testing & Deployment**
-   - End-to-end testing
-   - Performance testing
-   - Security audit
-   - Production deployment
+3. Deployment artifacts
+   - Operation runbook
+   - Test report
+   - Production release checklist
 
 ## Support
 
@@ -544,6 +537,6 @@ For questions or issues with the Azure implementation:
 
 ---
 
-**Last Updated:** 2025-10-07
-**Version:** 1.0.0
+**Last Updated:** 2025-12-20
+**Version:** 1.1.0
 

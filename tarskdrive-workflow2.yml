@@ -1,0 +1,126 @@
+app:
+  description: "Master Workflow: Minutes, Bullets, and Tasks (Safe Import)"
+  icon: 🤖
+  icon_background: "#FFEAD5"
+  mode: workflow
+  name: TaskDrive-Master-Safe
+kind: app
+version: 0.1.0
+workflow:
+  graph:
+    nodes:
+      # --- 1. START NODE ---
+      - id: "start"
+        position: { x: 80, y: 200 }
+        sourceType: start
+        type: start
+        title: Start
+        variables:
+          - label: Transcript
+            name: transcript
+            type: paragraph
+            required: true
+          - label: Processing Type
+            name: processingType
+            type: select
+            options:
+              - minutes
+              - bullets
+              - tasks
+            required: true
+
+      # --- 2. ROUTER NODE ---
+      - id: "router"
+        position: { x: 380, y: 200 }
+        sourceType: if-else
+        type: if-else
+        title: Router
+        conditions:
+          - id: "cond_minutes"
+            operator: equals
+            variable_selector: [start, processingType]
+            value: "minutes"
+          - id: "cond_bullets"
+            operator: equals
+            variable_selector: [start, processingType]
+            value: "bullets"
+        default_condition_id: "default_tasks"
+
+      # --- 3. MINUTES NODE (Model Removed for Safety) ---
+      - id: "llm_minutes"
+        position: { x: 680, y: 50 }
+        sourceType: llm
+        type: llm
+        title: Generate Minutes
+        # Model config removed to prevent Import Error 500
+        prompt_template:
+          - role: system
+            text: |
+              你是会议纪要专家。请根据以下录音文本生成详细的会议纪要。
+              包含：摘要、详细讨论点、决定事项、后续行动（Action Items）。
+          - role: user
+            text: "{{#start.transcript#}}"
+
+      # --- 4. BULLETS NODE (Model Removed for Safety) ---
+      - id: "llm_bullets"
+        position: { x: 680, y: 250 }
+        sourceType: llm
+        type: llm
+        title: Generate Bullets
+        # Model config removed to prevent Import Error 500
+        prompt_template:
+          - role: system
+            text: |
+              你是总结专家。请将会议内容总结为简洁的要点（Bullet Points）。
+              格式：
+              - [发言人]: [主要观点]
+          - role: user
+            text: "{{#start.transcript#}}"
+
+      # --- 5. TASKS NODE (Model Removed for Safety) ---
+      - id: "llm_tasks"
+        position: { x: 680, y: 450 }
+        sourceType: llm
+        type: llm
+        title: Generate Task List
+        # Model config removed to prevent Import Error 500
+        prompt_template:
+          - role: system
+            text: |
+              请分析会议文本，提取所有任务，并仅输出 Markdown 表格。
+
+              | 项番 | 项目 | 议题 | 课题 | 任务 | 负责人 | 状态 | 期限 | 
+              |---|---|---|---|---|---|---|---|
+
+              如果找不到相关信息，请留空。不要输出任何解释性文字。
+          - role: user
+            text: "{{#start.transcript#}}"
+
+      # --- 6. END NODE ---
+      - id: "end"
+        position: { x: 980, y: 200 }
+        sourceType: end
+        type: end
+        title: End
+        outputs:
+          - name: text
+            value_selector: [sys, last_node_output]
+
+    edges:
+      - source: start
+        target: router
+      - source: router
+        target: llm_minutes
+        sourceHandle: "cond_minutes"
+      - source: router
+        target: llm_bullets
+        sourceHandle: "cond_bullets"
+      - source: router
+        target: llm_tasks
+        sourceHandle: "default_tasks"
+      - source: llm_minutes
+        target: end
+      - source: llm_bullets
+        target: end
+      - source: llm_tasks
+        target: end

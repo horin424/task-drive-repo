@@ -16,9 +16,20 @@
     "AZURE_OPENAI_ENDPOINT": "<openai-endpoint>",
     "AZURE_OPENAI_API_KEY": "<openai-api-key>",
     "AZURE_OPENAI_DEPLOYMENT": "gpt-4o-mini",
-    "WHISPER_DEPLOYMENT_NAME": "whisper-1",
+    "WHISPER_DEPLOYMENT_NAME": "whisper-deployment",
     "WEB_PUBSUB_CONNECTION_STRING": "<webpubsub-connection-string>",
-    "WEBPUBSUB_HUB_NAME": "updates"
+    "WEBPUBSUB_HUB_NAME": "updates",
+    "ENABLE_DIFY_GENERATION": "false",
+    "DIFY_API_KEY": "<dify-api-key>",
+    "DIFY_WORKFLOW_URL": "http://localhost:5001/v1",
+    "DIFY_RESPONSE_MODE": "blocking",
+    "DIFY_INPUT_TRANSCRIPT_KEY": "transcript",
+    "DIFY_INPUT_PROCESSING_TYPE_KEY": "processingType",
+    "DIFY_INPUT_TASK_FILE_KEY": "taskFileKey",
+    "DIFY_INPUT_INFORMATION_FILE_KEY": "informationFileKey",
+    "DEFAULT_MONTHLY_MINUTES": "6000",
+    "DEFAULT_MONTHLY_TASK_GENERATIONS": "100",
+    "CLEANUP_AGE_HOURS": "72"
   },
   "Host": {
     "CORS": "*",

@@ -1,20 +1,11 @@
 import { app, InvocationContext, Timer } from "@azure/functions";
-import { CosmosClient, PatchOperation } from "@azure/cosmos";
+import type { PatchOperation } from "@azure/cosmos";
+import { CONTAINERS, patchItem, queryItems } from "../shared/cosmosClient";
+import type { Organization } from "../shared/models";
 
-// --- Configuration ---
-const cosmosDbConnectionString = process.env.COSMOS_DB_CONNECTION_STRING || "";
-const cosmosDbDatabaseName = process.env.COSMOS_DB_DATABASE_NAME || "AppDb";
-const orgsContainerName =
-  process.env.ORGANIZATIONS_CONTAINER_NAME || "Organizations";
-let cosmosClient: CosmosClient;
-
-function initializeCosmosClient(context: InvocationContext) {
-  if (cosmosClient) return;
-  if (!cosmosDbConnectionString)
-    throw new Error("COSMOS_DB_CONNECTION_STRING is not set.");
-  cosmosClient = new CosmosClient(cosmosDbConnectionString);
-  context.log("Timer: Cosmos Client initialized.");
-}
+const defaultMonthlyMinutes = Number(process.env.DEFAULT_MONTHLY_MINUTES) || 6000;
+const defaultMonthlyTaskGenerations =
+  Number(process.env.DEFAULT_MONTHLY_TASK_GENERATIONS) || 100;
 
 export async function TimerTriggerMonthlyReset(
   myTimer: Timer,
@@ -24,49 +15,45 @@ export async function TimerTriggerMonthlyReset(
   context.log("Monthly Reset Timer function triggered!", timeStamp);
 
   try {
-    initializeCosmosClient(context);
-    const database = cosmosClient.database(cosmosDbDatabaseName);
-    const container = database.container(orgsContainerName);
+    context.log(`Querying '${CONTAINERS.ORGANIZATIONS}' for monthly resets...`);
 
-    context.log(
-      `Querying container '${orgsContainerName}' for items to reset...`
+    const orgs = await queryItems<
+      Pick<Organization, "id" | "monthlyMinutes" | "monthlyTaskGenerations">
+    >(
+      CONTAINERS.ORGANIZATIONS,
+      "SELECT c.id, c.monthlyMinutes, c.monthlyTaskGenerations FROM c"
     );
-    // Query for all documents
-    const querySpec = { query: "SELECT * FROM c" };
-    const { resources: items } = await container.items
-      .query<{
-        id: string;
-        monthlyMinutesLimit?: number;
-        monthlyTasksLimit?: number;
-      }>(querySpec)
-      .fetchAll();
 
-    if (!items || items.length === 0) {
+    if (!orgs || orgs.length === 0) {
       context.log("No organization records found to reset.");
       return;
     }
-    context.log(`Found ${items.length} organizations to process for reset.`);
+    context.log(`Found ${orgs.length} organizations to process for reset.`);
 
-    const resetPromises = items.map((item) => {
-      const resetMinutes = item.monthlyMinutesLimit ?? 6000; // Default
-      const resetTasks = item.monthlyTasksLimit ?? 100; // Default
+    const resetPromises = orgs.map(async (org) => {
+      const resetMinutes = org.monthlyMinutes ?? defaultMonthlyMinutes;
+      const resetTasks =
+        org.monthlyTaskGenerations ?? defaultMonthlyTaskGenerations;
 
       const operations: PatchOperation[] = [
         { op: "set", path: "/remainingMinutes", value: resetMinutes },
-        { op: "set", path: "/remainingTasks", value: resetTasks },
+        { op: "set", path: "/remainingTaskGenerations", value: resetTasks },
         { op: "set", path: "/lastResetTimestamp", value: timeStamp },
+        { op: "set", path: "/updatedAt", value: timeStamp },
       ];
 
-      context.log(`Resetting limits for Org ID: ${item.id}`);
-      return container
-        .item(item.id, item.id)
-        .patch(operations)
-        .catch((err) =>
-          context.error(`Failed to patch Org ID: ${item.id}:`, err)
-        );
+      context.log(`Resetting limits for Org ID: ${org.id}`);
+      await patchItem(CONTAINERS.ORGANIZATIONS, org.id, org.id, operations);
     });
 
-    await Promise.all(resetPromises);
+    await Promise.all(
+      resetPromises.map((promise, index) =>
+        promise.catch((err) => {
+          const orgId = orgs[index]?.id ?? "unknown";
+          context.error(`Failed to patch Org ID: ${orgId}:`, err);
+        })
+      )
+    );
     context.log("Monthly reset process completed.");
   } catch (error) {
     context.error("Error during monthly reset:", error);

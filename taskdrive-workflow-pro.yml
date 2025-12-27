@@ -1,0 +1,183 @@
+app:
+  description: "Master Workflow: Integrates specific prompts for Minutes, Bullets, and Task Lists."
+  icon: 🤖
+  icon_background: "#FFEAD5"
+  mode: workflow
+  name: TaskDrive-Master-Pro
+kind: app
+version: 0.1.3
+workflow:
+  graph:
+    nodes:
+      # --- 1. START NODE ---
+      - id: "start"
+        position: { x: 80, y: 200 }
+        sourceType: start
+        type: start
+        title: Start
+        variables:
+          - label: Transcript
+            name: transcript
+            type: paragraph
+            required: true
+          - label: Processing Type
+            name: processingType
+            type: select
+            options:
+              - minutes
+              - bullets
+              - tasks
+            required: true
+
+      # --- 2. ROUTER NODE ---
+      - id: "router"
+        position: { x: 380, y: 200 }
+        sourceType: if-else
+        type: if-else
+        title: Router
+        conditions:
+          - id: "cond_minutes"
+            operator: equals
+            variable_selector: [start, processingType]
+            value: "minutes"
+          - id: "cond_bullets"
+            operator: equals
+            variable_selector: [start, processingType]
+            value: "bullets"
+        default_condition_id: "default_tasks"
+
+      # --- 3. MINUTES NODE (From your 'dify_議事録生成.yml') ---
+      - id: "llm_minutes"
+        position: { x: 680, y: 50 }
+        sourceType: llm
+        type: llm
+        title: Generate Minutes
+        model:
+          mode: chat
+          name: gpt-4o-mini
+          provider: azure_openai
+          completion_params:
+            temperature: 0.5
+        prompt_template:
+          - role: system
+            text: |
+              あなたは、会議の文字起こしデータから詳細かつわかりやすい議事録を作成する専門家です。以下の方針に従って議事録を生成してください。
+
+              **議事録の目的・スタイル**
+              * 会議の流れを正確に把握できるよう、話し合った内容や背景となる情報を具体的に盛り込みます。
+              * 「なぜその議題が取り上げられたのか」「具体的にどんな提案や問題があったのか」を再現できる詳細さを目指してください。
+              * 「誰が何を発言したのか」を明確にし、決定事項や課題・今後のアクションをはっきりと示します。
+
+              **基本的な構成**
+              1.  **会議の基本情報:** (不明な場合は省略)
+              2.  **参加者:** (文字起こしから推測できる範囲でリストアップ)
+              3.  **議題・テーマ:** 大きな話題ごとに区分し、見出しを付けます。
+              4.  **議事内容:** 各議題について、「誰が何を提案したか」「どのような意見が出たか」「何が問題視されたか」をまとめます。
+              5.  **決定事項/アクションアイテム:** 実行すべきタスクや合意事項を整理し、担当者がいれば併記します。
+
+              **表記・書式**
+              * 箇条書きや番号付きリストを積極的に使用してください。
+              * フィラーは省きつつ、会話の背景や意図が伝わるように記述してください。
+          - role: user
+            text: "{{#start.transcript#}}"
+
+      # --- 4. BULLETS NODE (From your 'dify_箇条書き生成.yml') ---
+      - id: "llm_bullets"
+        position: { x: 680, y: 250 }
+        sourceType: llm
+        type: llm
+        title: Generate Bullets
+        model:
+          mode: chat
+          name: gpt-4o-mini
+          provider: azure_openai
+          completion_params:
+            temperature: 0.3
+        prompt_template:
+          - role: system
+            text: |
+              あなたは、会議の文字起こしデータを読み込み、「誰が・何を発言したのか」という会議の流れをわかりやすくまとめる専門家です。
+
+              **目標と方針**
+              * **第三者視点の要約:** 発言者の名前を文頭に置いて、「～が～を述べた」のように客観的に表現してください。一人称（「私」）は使わず、発言者名で記述します。
+              * **簡潔さ:** フィラーは省きますが、重要なポイントは漏らさないでください。
+              * **質問・依頼:** 「～できますか？」は「～を依頼した」のようにまとめてください。
+
+              **出力形式**
+              * 会議の流れがわかる箇条書き形式で出力してください。
+
+              **出力イメージ**
+              * 原が沈黙の後に謝罪した。
+              * 平川が感謝を述べ、「これはどうか」と問い、評価した。
+              * 平川が契約書の内容に触れ、削減候補として提示すれば説得力が高まると提案した。
+          - role: user
+            text: "{{#start.transcript#}}"
+
+      # --- 5. TASKS NODE (Consolidated from 'dify_タスク一覧生成.yml') ---
+      - id: "llm_tasks"
+        position: { x: 680, y: 450 }
+        sourceType: llm
+        type: llm
+        title: Generate Task List
+        model:
+          mode: chat
+          name: gpt-4o-mini
+          provider: azure_openai
+          completion_params:
+            temperature: 0.1
+        prompt_template:
+          - role: system
+            text: |
+              あなたは、会議の文字起こしデータからタスク情報を抽出し、Markdownテーブル形式で出力するアシスタントです。
+
+              **指示:**
+              提供された会議の文字起こしデータを分析し、議論された全てのタスク（新規タスク、または議論された既存の課題）を抽出してください。
+
+              **抽出基準:**
+              * 誰かが何かを依頼した、または自分が行うと宣言した事項。
+              * 会議で明らかになった課題や問題点。
+              * 決定されたネクストアクション。
+
+              **出力フォーマット:**
+              以下の12列を持つMarkdownテーブルのみを出力してください。**説明文や前置きは一切不要です。**
+
+              | 項番 | プロジェクト | 議題 | 課題 | タスク | 担当者 | ステータス | 期限 | 前回進捗 | 今回進捗 | 会議レビュー | 推奨アクション |
+              |---|---|---|---|---|---|---|---|---|---|---|---|
+
+              **各列の記述ルール:**
+              * **項番:** 1から始まる連番。
+              * **プロジェクト:** 判別できない場合は「未分類」。
+              * **今回進捗:** 「【YYYY-MM-DDの会議での状況】会議内で新規に発生。関連する議論内容（誰が何を提案し、何が決定されたか）を具体的に記述」の形式で記述。
+              * **前回進捗:** 新規抽出のため「情報なし」または空欄。
+              * **推奨アクション:** 「【担当者】: アクション内容（期限目安）」の形式で記述。
+          - role: user
+            text: "{{#start.transcript#}}"
+
+      # --- 6. END NODE ---
+      - id: "end"
+        position: { x: 980, y: 200 }
+        sourceType: end
+        type: end
+        title: End
+        outputs:
+          - name: text
+            value_selector: [sys, last_node_output]
+
+    edges:
+      - source: start
+        target: router
+      - source: router
+        target: llm_minutes
+        sourceHandle: "cond_minutes"
+      - source: router
+        target: llm_bullets
+        sourceHandle: "cond_bullets"
+      - source: router
+        target: llm_tasks
+        sourceHandle: "default_tasks"
+      - source: llm_minutes
+        target: end
+      - source: llm_bullets
+        target: end
+      - source: llm_tasks
+        target: end
