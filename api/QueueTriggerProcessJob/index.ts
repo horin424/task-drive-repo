@@ -40,6 +40,20 @@ function isProcessingJob(data: unknown): data is ProcessingJob {
 const whisperDeploymentName =
   process.env.WHISPER_DEPLOYMENT_NAME || "whisper-deployment";
 
+const speakerAssignmentDeployment =
+  process.env.SPEAKER_ASSIGNMENT_MODEL_DEPLOYMENT ||
+  process.env.AZURE_OPENAI_DEPLOYMENT ||
+  "gpt-4o-mini";
+
+const enableSpeakerAssignment =
+  (process.env.ENABLE_SPEAKER_ASSIGNMENT ?? "true").toLowerCase() === "true";
+
+const maxSpeakers = (() => {
+  const raw = Number(process.env.SPEAKER_ASSIGNMENT_MAX_SPEAKERS ?? "3");
+  if (!Number.isFinite(raw)) return 3;
+  return Math.max(1, Math.min(3, Math.floor(raw)));
+})();
+
 const OUTPUT_CONTAINER =
   process.env.AZURE_STORAGE_OUTPUT_CONTAINER || "outputs";
 
@@ -182,6 +196,167 @@ async function transcribe(
   );
 
   return { text, duration, words };
+}
+
+type SpeakerId = "speaker_0" | "speaker_1" | "speaker_2";
+type SegmentForLabeling = {
+  segment_id: string;
+  text: string;
+  start: number;
+  end: number;
+};
+
+const asSpeakerId = (value: unknown): SpeakerId | null => {
+  if (value === "speaker_0" || value === "speaker_1" || value === "speaker_2") {
+    if (maxSpeakers <= 1) return value === "speaker_0" ? value : null;
+    if (maxSpeakers === 2) return value === "speaker_2" ? null : value;
+    return value;
+  }
+  return null;
+};
+
+const extractChatMessageText = (content: unknown): string => {
+  if (typeof content === "string") return content.trim();
+  if (Array.isArray(content)) {
+    return content
+      .map((p) => {
+        if (typeof p === "string") return p;
+        if (p && typeof p === "object" && "text" in p) {
+          const text = (p as { text?: unknown }).text;
+          return typeof text === "string" ? text : "";
+        }
+        return "";
+      })
+      .join("")
+      .trim();
+  }
+  return "";
+};
+
+const extractJsonCandidate = (text: string): string => {
+  const trimmed = text.trim();
+  const fenced = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  if (fenced?.[1]) return fenced[1].trim();
+  return trimmed;
+};
+
+const truncateForPrompt = (value: string, max = 220): string => {
+  const trimmed = value.replace(/\s+/g, " ").trim();
+  if (trimmed.length <= max) return trimmed;
+  return `${trimmed.slice(0, max)}…`;
+};
+
+async function autoAssignSpeakersToSegments(
+  client: OpenAIClient,
+  segments: SegmentForLabeling[],
+  context: InvocationContext
+): Promise<Map<string, SpeakerId> | null> {
+  if (!enableSpeakerAssignment) return null;
+  if (segments.length < 2) return null;
+  if (!speakerAssignmentDeployment) return null;
+
+  const maxSegmentsPerChunk = 120;
+  const recentContextCount = 12;
+
+  const assignments = new Map<string, SpeakerId>();
+  const recentLabeled: Array<{
+    segment_id: string;
+    speaker_id: SpeakerId;
+    text: string;
+  }> = [];
+
+  for (let offset = 0; offset < segments.length; offset += maxSegmentsPerChunk) {
+    const chunk = segments.slice(offset, offset + maxSegmentsPerChunk);
+
+    const recentContext = recentLabeled
+      .slice(-recentContextCount)
+      .map(
+        (s) =>
+          `${s.segment_id}=${s.speaker_id}: ${truncateForPrompt(s.text, 120)}`
+      )
+      .join("\n");
+
+    const chunkPayload = chunk.map((s) => ({
+      segment_id: s.segment_id,
+      text: truncateForPrompt(s.text, 260),
+    }));
+
+    const systemPrompt = `You label transcript segments into up to ${maxSpeakers} speakers.
+Return ONLY a valid JSON object mapping each segment_id to a speaker_id.
+speaker_id must be one of: speaker_0, speaker_1, speaker_2.
+Use as many speakers as needed (up to the maximum). Keep speaker identities consistent across segments and across the entire conversation.
+Do not add markdown, code fences, commentary, or extra keys.`;
+
+    const userPrompt = `Context (last labeled segments, keep speaker mapping consistent):\n${
+      recentContext || "(none)"
+    }\n\nNow label these segments (you MUST include every segment_id exactly once in the JSON output):\n${JSON.stringify(
+      chunkPayload
+    )}`;
+
+    try {
+      const response = await client.getChatCompletions(
+        speakerAssignmentDeployment,
+        [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        {
+          temperature: 0,
+          maxTokens: 2000,
+        }
+      );
+
+      const messageContent = response.choices?.[0]?.message?.content;
+      const rawText = extractChatMessageText(messageContent);
+      if (!rawText) {
+        context.warn(
+          "[SpeakerAssignment] Empty response from model; skipping auto assignment for this chunk."
+        );
+        return null;
+      }
+
+      const jsonCandidate = extractJsonCandidate(rawText);
+      const parsed = JSON.parse(jsonCandidate) as unknown;
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+        context.warn(
+          "[SpeakerAssignment] Unexpected JSON shape; expected an object mapping segment_id -> speaker_id."
+        );
+        return null;
+      }
+
+      const mapping = parsed as Record<string, unknown>;
+      for (const seg of chunk) {
+        const rawSpeaker = mapping[seg.segment_id];
+        const speaker = asSpeakerId(rawSpeaker);
+        if (!speaker) {
+          context.warn(
+            `[SpeakerAssignment] Missing/invalid speaker for ${seg.segment_id}; defaulting to speaker_0.`
+          );
+          assignments.set(seg.segment_id, "speaker_0");
+          recentLabeled.push({
+            segment_id: seg.segment_id,
+            speaker_id: "speaker_0",
+            text: seg.text,
+          });
+          continue;
+        }
+        assignments.set(seg.segment_id, speaker);
+        recentLabeled.push({
+          segment_id: seg.segment_id,
+          speaker_id: speaker,
+          text: seg.text,
+        });
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      context.warn(
+        `[SpeakerAssignment] Failed to auto-assign speakers (chunk offset=${offset}): ${msg}`
+      );
+      return null;
+    }
+  }
+
+  return assignments;
 }
 
 async function saveResults(
@@ -347,6 +522,35 @@ export async function QueueTriggerProcessJob(
     );
 
     actualMinutesUsed = durationInSeconds / 60;
+
+    // 4.5 Assign speaker ids automatically (Whisper itself does not diarize speakers)
+    await sendProgressUpdate(
+      sessionId,
+      "transcription",
+      45,
+      "Assigning speakers..."
+    );
+    const segmentsForLabeling: SegmentForLabeling[] = words.map((w, i) => ({
+      segment_id: w.segment_id || `seg_${i}`,
+      text: w.text,
+      start: w.start,
+      end: w.end,
+    }));
+    const speakerAssignments = await autoAssignSpeakersToSegments(
+      client,
+      segmentsForLabeling,
+      context
+    );
+    if (speakerAssignments) {
+      for (const w of words) {
+        const segmentId = w.segment_id;
+        if (!segmentId) continue;
+        const speaker = speakerAssignments.get(segmentId);
+        if (speaker) {
+          w.speaker_id = speaker;
+        }
+      }
+    }
 
     // 5. Check actual duration against limits
     if (org.remainingMinutes < actualMinutesUsed) {

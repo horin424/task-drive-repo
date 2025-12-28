@@ -70,24 +70,35 @@ export const useTranscriptionResult = (session: ProcessingSession) => {
             }
 
             if (wordsArray.length > 0) {
-              const transcript = [];
-              let currentSpeaker = null;
-              let currentChunks = [];
+              const transcript: Array<[string, string]> = [];
+              let currentSpeaker: string | null = null;
+              let currentSegmentId: string | undefined;
+              let currentChunks: string[] = [];
+              let previousEnd: number | null = null;
 
               for (const item of wordsArray) {
                 const speaker = (item as Word).speaker_id;
                 const text = (item as Word).text;
+                const segmentId = (item as Word).segment_id;
+
+                const hasSpeakerBoundary = speaker !== currentSpeaker;
+                const hasSegmentBoundary =
+                  !!segmentId && segmentId !== currentSegmentId;
+                const hasGapBoundary =
+                  previousEnd !== null && item.start - previousEnd > 1.0;
 
                 // スピーカーが切り替わったら、これまでの内容をまとめる
-                if (speaker !== currentSpeaker) {
+                if (hasSpeakerBoundary || hasSegmentBoundary || hasGapBoundary) {
                   if (currentSpeaker !== null) {
                     transcript.push([currentSpeaker, currentChunks.join('')]);
                   }
                   currentSpeaker = speaker;
+                  currentSegmentId = segmentId;
                   currentChunks = [];
                 }
 
                 currentChunks.push(text);
+                previousEnd = item.end;
               }
 
               // ループ終了後の最後のスピーカー

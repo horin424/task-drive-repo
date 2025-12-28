@@ -13,8 +13,19 @@ import { toast } from "react-hot-toast";
 import { uploadToAzure } from "@/lib/storage-azure";
 import GenerationOptions from "./GenerationOptions";
 import { useGenerationOptions } from "@/hooks/useGenerationOptions";
-import { generateSpeakerColorMap, getSpeakerColor } from "@/utils/speakerColors";
+import { getSpeakerColor } from "@/utils/speakerColors";
 import { useSessionStore } from "@/stores/sessionStore";
+
+const SPEAKER_COLORS = [
+  "#2563eb",
+  "#dc2626",
+  "#059669",
+  "#d97706",
+  "#7c3aed",
+  "#c2185b",
+  "#4f46e5",
+  "#0891b2",
+];
 
 interface TranscriptionResultProps {
   session: ProcessingSession;
@@ -63,7 +74,24 @@ const TranscriptionResult: React.FC<TranscriptionResultProps> = ({
 
   const [transcript, setTranscript] = useState(initialTranscript || "");
   const { options: generationOptions } = useGenerationOptions();
-  const { organization, speakerMap } = useSessionStore();
+  const { organization, speakerMap, setSpeakerMap } = useSessionStore();
+
+  const mergedSpeakerMap = useMemo(() => {
+    return {
+      ...(session.speakerMap ?? {}),
+      ...speakerMap,
+    };
+  }, [session.speakerMap, speakerMap]);
+
+  useEffect(() => {
+    if (
+      Object.keys(speakerMap).length === 0 &&
+      session.speakerMap &&
+      Object.keys(session.speakerMap).length > 0
+    ) {
+      setSpeakerMap(session.speakerMap);
+    }
+  }, [session.speakerMap, setSpeakerMap, speakerMap]);
 
   useEffect(() => {
     const next = initialTranscript || "";
@@ -105,9 +133,10 @@ const TranscriptionResult: React.FC<TranscriptionResultProps> = ({
 
   const hasSpeakers = useMemo(() => {
     const transcriptHasTags = /\[speaker_\d+\]:/.test(transcript);
+    const words = customJsonData?.words;
     const wordsHaveSpeakers =
-      Array.isArray(customJsonData?.words) &&
-      customJsonData.words.some(
+      Array.isArray(words) &&
+      words.some(
         (w) => typeof w.speaker_id === "string" && w.speaker_id.length > 0
       );
     return transcriptHasTags || wordsHaveSpeakers;
@@ -117,14 +146,61 @@ const TranscriptionResult: React.FC<TranscriptionResultProps> = ({
     session.transcriptFormat === TranscriptFormat.JSON ||
     !!session.transcriptKey;
 
-  const speakerColorMap = useMemo(() => {
-    const parsedLines = parseTranscript(transcript);
-    const speakerIds = parsedLines
-      .filter((line) => line.type === "speaker" && line.speakerId)
-      .map((line) => line.speakerId!)
-      .filter((id, index, arr) => arr.indexOf(id) === index);
-    return generateSpeakerColorMap(speakerIds);
-  }, [transcript]);
+  const speakerNameToId = useMemo(() => {
+    const mapping: Record<string, string> = {};
+    for (const [id, name] of Object.entries(mergedSpeakerMap)) {
+      const trimmed = name.trim();
+      if (trimmed) {
+        mapping[trimmed] = id;
+      }
+    }
+    return mapping;
+  }, [mergedSpeakerMap]);
+
+  const resolveCanonicalSpeakerId = (rawSpeakerId?: string) => {
+    if (!rawSpeakerId) return undefined;
+    if (Object.prototype.hasOwnProperty.call(mergedSpeakerMap, rawSpeakerId)) {
+      return rawSpeakerId;
+    }
+    const trimmed = rawSpeakerId.trim();
+    return speakerNameToId[trimmed] ?? rawSpeakerId;
+  };
+
+  const speakerColorsForCards = useMemo(() => {
+    const ids = Object.keys(mergedSpeakerMap)
+      .filter((id) => id.startsWith("speaker_"))
+      .map((id) => {
+        const suffix = id.split("_")[1] ?? "0";
+        const numeric = Number.parseInt(suffix, 10);
+        return { id, numeric: Number.isFinite(numeric) ? numeric : 0 };
+      })
+      .sort((a, b) => a.numeric - b.numeric)
+      .map((entry) => entry.id);
+
+    const colors: Record<string, string> = {};
+    const usedNameColors: Record<string, string> = {};
+    let colorIndex = 0;
+
+    for (const id of ids) {
+      const name = mergedSpeakerMap[id]?.trim();
+      if (name) {
+        if (usedNameColors[name]) {
+          colors[id] = usedNameColors[name];
+        } else {
+          const color = SPEAKER_COLORS[colorIndex % SPEAKER_COLORS.length];
+          colors[id] = color;
+          usedNameColors[name] = color;
+          colorIndex += 1;
+        }
+      } else {
+        const color = SPEAKER_COLORS[colorIndex % SPEAKER_COLORS.length];
+        colors[id] = color;
+        colorIndex += 1;
+      }
+    }
+
+    return colors;
+  }, [mergedSpeakerMap]);
 
   const titleText = useMemo(() => {
     switch (session.status) {
@@ -361,12 +437,21 @@ const TranscriptionResult: React.FC<TranscriptionResultProps> = ({
             <ResultSection title="文字起こし結果">
               <div className={styles.transcriptCards}>
                 {speakerCards.map((line: TranscriptLine) => {
+                  const canonicalSpeakerId = resolveCanonicalSpeakerId(
+                    line.speakerId
+                  );
+                  const mappedName = canonicalSpeakerId
+                    ? mergedSpeakerMap[canonicalSpeakerId]?.trim()
+                    : "";
                   const displayName =
-                    (line.speakerId && speakerMap[line.speakerId]) ||
+                    mappedName ||
                     line.speakerTag?.replace(/\[|\]/g, "") ||
                     line.speakerId ||
                     "Speaker";
-                const color = getSpeakerColor(line.speakerId || "speaker_0");
+                  const color =
+                    (canonicalSpeakerId &&
+                      speakerColorsForCards[canonicalSpeakerId]) ||
+                    getSpeakerColor(canonicalSpeakerId || line.speakerId || "speaker_0");
                   return (
                     <div
                       key={line.lineNumber}
@@ -394,15 +479,21 @@ const TranscriptionResult: React.FC<TranscriptionResultProps> = ({
             <ResultSection title="文字起こし結果">
               <div className={styles.transcriptCards}>
                 {speakerCards.map((line: TranscriptLine) => {
+                  const canonicalSpeakerId = resolveCanonicalSpeakerId(
+                    line.speakerId
+                  );
+                  const mappedName = canonicalSpeakerId
+                    ? mergedSpeakerMap[canonicalSpeakerId]?.trim()
+                    : "";
                   const displayName =
-                    (line.speakerId && speakerMap[line.speakerId]) ||
+                    mappedName ||
                     line.speakerTag?.replace(/\[|\]/g, "") ||
                     line.speakerId ||
                     "Speaker";
                   const color =
-                    line.speakerId && speakerColorMap[line.speakerId]
-                      ? speakerColorMap[line.speakerId]
-                      : "#6b7280";
+                    (canonicalSpeakerId &&
+                      speakerColorsForCards[canonicalSpeakerId]) ||
+                    getSpeakerColor(canonicalSpeakerId || line.speakerId || "speaker_0");
                   return (
                     <div
                       key={line.lineNumber}
